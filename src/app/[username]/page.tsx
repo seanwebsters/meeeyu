@@ -9,6 +9,7 @@ import { getPromptsByIds } from "@/lib/db/prompts";
 import { getReactionsForProfile, countByEmoji } from "@/lib/db/reactions";
 import { getFollowCounts, isFollowing } from "@/lib/db/follows";
 import { aggregateAnswers } from "@/lib/aggregate";
+import { computeStreak } from "@/lib/streak";
 import { rotationFromId } from "@/lib/utils";
 import { getSiteUrl } from "@/lib/site";
 
@@ -18,6 +19,7 @@ import { CardTile } from "@/components/scrapbook/CardTile";
 import { ReactionBar } from "@/components/profile/ReactionBar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { PromptRow } from "@/components/profile/PromptRow";
+import { StreakBadge } from "@/components/profile/StreakBadge";
 import { ShareBar } from "@/components/share/ShareBar";
 import { LinkButton } from "@/components/ui/Button";
 
@@ -79,6 +81,15 @@ export default async function ProfilePage({
   const name = profile.display_name || profile.username;
   const reactionCounts = Object.fromEntries(countByEmoji(reactions));
 
+  // "me + you" activity streak: consecutive days someone — owner or friend —
+  // has added to this meeeyu (a card, a prompt answer, or a reaction).
+  const streak = computeStreak([
+    ...cards.flatMap((c) => [c.created_at, c.updated_at]),
+    ...selfAnswers.map((a) => a.created_at),
+    ...friendAnswers.map((a) => a.created_at),
+    ...reactions.map((r) => r.created_at),
+  ]);
+
   return (
     <main className="mx-auto min-h-dvh w-full max-w-2xl pb-16">
       <header className="flex flex-col items-center px-6 pt-10 text-center">
@@ -91,6 +102,12 @@ export default async function ProfilePage({
         <h1 className="mt-4 text-2xl font-semibold">{name}</h1>
         <p className="text-sm text-ink-soft">@{profile.username}</p>
         {profile.bio && <p className="mt-2 max-w-sm text-sm">{profile.bio}</p>}
+
+        {streak > 0 && (
+          <div className="mt-3">
+            <StreakBadge days={streak} />
+          </div>
+        )}
 
         <div className="mt-4 flex gap-6 text-sm">
           <div>
