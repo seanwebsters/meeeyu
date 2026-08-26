@@ -9,6 +9,14 @@ export type Vibe =
   | "y2k"
   | "cute";
 
+export type BackgroundKey =
+  | "classic"
+  | "dreamy"
+  | "midnight"
+  | "sunset"
+  | "mint"
+  | "y2k";
+
 export type CardType =
   | "photo"
   | "music"
@@ -44,6 +52,8 @@ export type Profile = {
   avatar_url: string | null;
   bio: string | null;
   vibe: Vibe;
+  background: BackgroundKey;
+  is_premium: boolean;
   onboarded: boolean;
   created_at: string;
   updated_at: string;

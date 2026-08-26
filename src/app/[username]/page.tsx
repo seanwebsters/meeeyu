@@ -10,6 +10,7 @@ import { getReactionsForProfile, countByEmoji } from "@/lib/db/reactions";
 import { getFollowCounts, isFollowing } from "@/lib/db/follows";
 import { aggregateAnswers } from "@/lib/aggregate";
 import { computeStreak } from "@/lib/streak";
+import { getBackground } from "@/lib/backgrounds";
 import { rotationFromId } from "@/lib/utils";
 import { getSiteUrl } from "@/lib/site";
 
@@ -90,8 +91,13 @@ export default async function ProfilePage({
     ...reactions.map((r) => r.created_at),
   ]);
 
+  const theme = getBackground(profile.background);
+
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-2xl pb-16">
+    <main
+      className="mx-auto min-h-dvh w-full max-w-2xl bg-paper text-ink pb-16"
+      style={theme.vars}
+    >
       <header className="flex flex-col items-center px-6 pt-10 text-center">
         <Polaroid
           src={profile.avatar_url}

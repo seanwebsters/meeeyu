@@ -9,6 +9,7 @@ import { upsertSelfAnswer } from "@/lib/db/answers";
 import { updateProfile } from "@/lib/db/profiles";
 import { CARD_META } from "@/components/scrapbook/CardTile";
 import { CardEditorRow } from "@/components/edit/CardEditorRow";
+import { ThemePicker } from "@/components/edit/ThemePicker";
 import { rotationFromId, cn } from "@/lib/utils";
 import type { CardType, Profile, ProfileCard, Prompt, PromptSelfAnswer, Vibe } from "@/lib/types";
 import { Button, LinkButton } from "@/components/ui/Button";
@@ -17,7 +18,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 const CARD_TYPES = Object.keys(CARD_META) as CardType[];
 const VIBES: Vibe[] = ["soft", "bold", "dreamy", "retro", "minimal", "playful", "indie", "y2k", "cute"];
 
-type Tab = "cards" | "prompts" | "profile";
+type Tab = "cards" | "prompts" | "theme" | "profile";
 
 export function EditBoard({
   profile,
@@ -110,7 +111,7 @@ export function EditBoard({
       </div>
 
       <div className="mb-6 flex gap-2">
-        {(["cards", "prompts", "profile"] as Tab[]).map((t) => (
+        {(["cards", "prompts", "theme", "profile"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -179,6 +180,8 @@ export function EditBoard({
           ))}
         </div>
       )}
+
+      {tab === "theme" && <ThemePicker profile={profile} />}
 
       {tab === "profile" && (
         <div className="space-y-5">

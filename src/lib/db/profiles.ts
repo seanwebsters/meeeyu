@@ -53,9 +53,12 @@ export async function createProfile(
 export async function updateProfile(
   supabase: DB,
   id: string,
-  patch: Partial<Pick<Profile, "display_name" | "avatar_url" | "bio" | "vibe" | "onboarded">> & {
-    vibe?: Vibe;
-  }
+  patch: Partial<
+    Pick<
+      Profile,
+      "display_name" | "avatar_url" | "bio" | "vibe" | "onboarded" | "background" | "is_premium"
+    >
+  > & { vibe?: Vibe }
 ) {
   const { data, error } = await supabase
     .from("profiles")
