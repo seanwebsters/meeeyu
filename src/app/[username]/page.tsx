@@ -17,6 +17,7 @@ import { getSiteUrl } from "@/lib/site";
 import { Polaroid } from "@/components/scrapbook/Polaroid";
 import { ScrapbookCanvas } from "@/components/scrapbook/ScrapbookCanvas";
 import { CardTile } from "@/components/scrapbook/CardTile";
+import { MemoriesBoard } from "@/components/scrapbook/MemoriesBoard";
 import { ReactionBar } from "@/components/profile/ReactionBar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { PromptRow } from "@/components/profile/PromptRow";
@@ -92,6 +93,8 @@ export default async function ProfilePage({
   ]);
 
   const theme = getBackground(profile.background);
+  const gridCards = cards.filter((c) => c.type !== "memory");
+  const memoryCards = cards.filter((c) => c.type === "memory");
 
   return (
     <main
@@ -163,7 +166,7 @@ export default async function ProfilePage({
 
       <section className="mt-8">
         <ScrapbookCanvas>
-          {cards.map((card) => (
+          {gridCards.map((card) => (
             <CardTile key={card.id} card={card} rotation={rotationFromId(card.id)} />
           ))}
         </ScrapbookCanvas>
@@ -173,6 +176,15 @@ export default async function ProfilePage({
           </p>
         )}
       </section>
+
+      {memoryCards.length > 0 && (
+        <section className="mt-10 px-4">
+          <h2 className="mb-3 px-1 text-center font-hand text-3xl text-ink">
+            memories
+          </h2>
+          <MemoriesBoard cards={memoryCards} />
+        </section>
+      )}
 
       {promptIds.length > 0 && (
         <section className="mt-10 space-y-3 px-4">

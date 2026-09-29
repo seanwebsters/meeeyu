@@ -39,10 +39,16 @@ export type CardType =
 // for them to satisfy Supabase's `GenericTable` (`Row`/`Insert`/`Update` must
 // be assignable to `Record<string, unknown>`) when used below in `Database`.
 
+export type TaggedFriend = {
+  id: string;
+  username: string;
+};
+
 export type CardContent = {
   text?: string;
   subtitle?: string;
   url?: string;
+  tagged_friends?: TaggedFriend[];
 };
 
 export type Profile = {
@@ -67,6 +73,10 @@ export type ProfileCard = {
   content: CardContent;
   position: number;
   rotation: number;
+  /** 0-100, percentage position on the free-drag memories board. Only
+   * meaningful for type "memory" — null for every other card type. */
+  position_x: number | null;
+  position_y: number | null;
   created_at: string;
   updated_at: string;
 };

@@ -21,7 +21,7 @@ export const CARD_META: Record<
   person: { icon: "🫶", label: "person", note: "paper" },
   thing: { icon: "🧸", label: "thing", note: "paper" },
   outfit: { icon: "👕", label: "outfit", note: "paper" },
-  memory: { icon: "📼", label: "memory", note: "paper" },
+  memory: { icon: "📼", label: "memory", note: "photo" },
   custom: { icon: "✨", label: "", note: "paper" },
 };
 
@@ -36,7 +36,7 @@ export function CardTile({
 }) {
   const meta = CARD_META[card.type];
 
-  if (card.type === "photo") {
+  if (meta.note === "photo") {
     return (
       <Polaroid
         src={card.content.url}

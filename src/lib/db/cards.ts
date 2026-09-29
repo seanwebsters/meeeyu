@@ -22,6 +22,8 @@ export async function createCard(
     content?: CardContent;
     position?: number;
     rotation?: number;
+    position_x?: number;
+    position_y?: number;
   }
 ) {
   const { data, error } = await supabase
@@ -33,6 +35,8 @@ export async function createCard(
       content: input.content ?? {},
       position: input.position ?? 0,
       rotation: input.rotation ?? 0,
+      position_x: input.position_x ?? null,
+      position_y: input.position_y ?? null,
     })
     .select("*")
     .single();
@@ -43,7 +47,9 @@ export async function createCard(
 export async function updateCard(
   supabase: DB,
   id: string,
-  patch: Partial<Pick<ProfileCard, "title" | "content" | "position" | "rotation">>
+  patch: Partial<
+    Pick<ProfileCard, "title" | "content" | "position" | "rotation" | "position_x" | "position_y">
+  >
 ) {
   const { data, error } = await supabase
     .from("profile_cards")

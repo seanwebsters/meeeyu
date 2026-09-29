@@ -10,15 +10,18 @@ import { updateProfile } from "@/lib/db/profiles";
 import { CARD_META } from "@/components/scrapbook/CardTile";
 import { CardEditorRow } from "@/components/edit/CardEditorRow";
 import { ThemePicker } from "@/components/edit/ThemePicker";
+import { MemoriesEditor } from "@/components/edit/MemoriesEditor";
 import { rotationFromId, cn } from "@/lib/utils";
 import type { CardType, Profile, ProfileCard, Prompt, PromptSelfAnswer, Vibe } from "@/lib/types";
 import { Button, LinkButton } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 
-const CARD_TYPES = Object.keys(CARD_META) as CardType[];
+// "memory" cards live on their own free-drag board (the Memories tab), not
+// in this ordered list — so it's left out of the generic add-card picker.
+const CARD_TYPES = (Object.keys(CARD_META) as CardType[]).filter((t) => t !== "memory");
 const VIBES: Vibe[] = ["soft", "bold", "dreamy", "retro", "minimal", "playful", "indie", "y2k", "cute"];
 
-type Tab = "cards" | "prompts" | "theme" | "profile";
+type Tab = "cards" | "memories" | "prompts" | "theme" | "profile";
 
 export function EditBoard({
   profile,
@@ -44,6 +47,9 @@ export function EditBoard({
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url);
   const fileInput = useRef<HTMLInputElement>(null);
 
+  const nonMemoryCards = cards.filter((c) => c.type !== "memory");
+  const memoryCards = cards.filter((c) => c.type === "memory");
+
   function updateCardInState(updated: ProfileCard) {
     setCards((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
   }
@@ -52,23 +58,36 @@ export function EditBoard({
     const created = await createCard(supabase, {
       profile_id: profile.id,
       type: newType,
-      position: cards.length,
-      rotation: rotationFromId(`${profile.id}-${newType}-${cards.length}`),
+      position: nonMemoryCards.length,
+      rotation: rotationFromId(`${profile.id}-${newType}-${nonMemoryCards.length}`),
     });
     setCards((prev) => [...prev, created]);
   }
 
   async function moveCard(id: string, direction: "up" | "down") {
-    const index = cards.findIndex((c) => c.id === id);
+    const list = nonMemoryCards;
+    const index = list.findIndex((c) => c.id === id);
     const swapWith = direction === "up" ? index - 1 : index + 1;
-    if (swapWith < 0 || swapWith >= cards.length) return;
-    const next = [...cards];
-    [next[index], next[swapWith]] = [next[swapWith], next[index]];
-    setCards(next);
+    if (swapWith < 0 || swapWith >= list.length) return;
+    const reordered = [...list];
+    [reordered[index], reordered[swapWith]] = [reordered[swapWith], reordered[index]];
+    setCards([...reordered, ...memoryCards]);
     await reorderCards(
       supabase,
-      next.map((c, i) => ({ id: c.id, position: i }))
+      reordered.map((c, i) => ({ id: c.id, position: i }))
     );
+  }
+
+  function handleMemoryCreate(card: ProfileCard) {
+    setCards((prev) => [...prev, card]);
+  }
+
+  function handleMemoryUpdate(id: string, patch: Partial<ProfileCard>) {
+    setCards((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+  }
+
+  function handleMemoryDelete(id: string) {
+    setCards((prev) => prev.filter((c) => c.id !== id));
   }
 
   async function saveAnswer(promptId: string, value: string) {
@@ -111,7 +130,7 @@ export function EditBoard({
       </div>
 
       <div className="mb-6 flex gap-2">
-        {(["cards", "prompts", "theme", "profile"] as Tab[]).map((t) => (
+        {(["cards", "memories", "prompts", "theme", "profile"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -127,7 +146,7 @@ export function EditBoard({
 
       {tab === "cards" && (
         <div className="space-y-3">
-          {cards.map((card, i) => (
+          {nonMemoryCards.map((card, i) => (
             <CardEditorRow
               key={card.id}
               card={card}
@@ -136,7 +155,7 @@ export function EditBoard({
               onRemove={() => setCards((prev) => prev.filter((c) => c.id !== card.id))}
               onMove={(dir) => moveCard(card.id, dir)}
               isFirst={i === 0}
-              isLast={i === cards.length - 1}
+              isLast={i === nonMemoryCards.length - 1}
             />
           ))}
 
@@ -179,6 +198,16 @@ export function EditBoard({
             </div>
           ))}
         </div>
+      )}
+
+      {tab === "memories" && (
+        <MemoriesEditor
+          profileId={profile.id}
+          cards={memoryCards}
+          onCreate={handleMemoryCreate}
+          onUpdate={handleMemoryUpdate}
+          onDelete={handleMemoryDelete}
+        />
       )}
 
       {tab === "theme" && <ThemePicker profile={profile} />}
