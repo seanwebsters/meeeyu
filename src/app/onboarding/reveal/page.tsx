@@ -17,8 +17,13 @@ export default async function RevealStep() {
   if (!profile.onboarded) redirect("/onboarding/photo");
 
   const cards = await getCardsForProfile(supabase, profile.id);
-  const shareLink = await getOrCreateGeneralShareLink(supabase, profile.id);
   const profileUrl = `${getSiteUrl()}/${profile.username}`;
+
+  // Non-essential: pre-creating a shareable /ask link is a convenience, not
+  // something onboarding completion should ever hinge on.
+  const shareLink = await getOrCreateGeneralShareLink(supabase, profile.id).catch(
+    () => null
+  );
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col items-center px-4 py-10 text-center">
@@ -59,9 +64,11 @@ export default async function RevealStep() {
         <LinkButton href={`/${profile.username}`} variant="ghost" className="w-full">
           view my meeeyu
         </LinkButton>
-        <p className="pt-1 text-xs text-ink-soft">
-          general share link: {getSiteUrl()}/ask/{shareLink.token}
-        </p>
+        {shareLink && (
+          <p className="pt-1 text-xs text-ink-soft">
+            general share link: {getSiteUrl()}/ask/{shareLink.token}
+          </p>
+        )}
       </div>
     </main>
   );
