@@ -6,7 +6,7 @@ build the rest. This is the V1 (MVP) build: Next.js (App Router) + TypeScript
 
 ## What's here
 
-- **Auth** — passwordless email one-time-code sign-in (`/login`)
+- **Auth** — email + password sign-in, no confirmation step (`/login`)
 - **Onboarding** — username → photo → favourite things → 5 prompts → generated scrapbook (`/onboarding/*`)
 - **Public profile** — `meeeyu.app/<username>`, a scrapbook of polaroids, sticky
   notes and torn-paper cards, plus the "me vs you" comparison for any prompt
@@ -36,12 +36,13 @@ editor run, in order:
 2. `supabase/seed.sql` — the starter prompt catalog ("what animal would I
    be?", etc.)
 
-### 2. Enable email OTP codes
+### 2. Turn off email confirmation
 
-Sign-in uses a 6-digit code, not a magic link. In your Supabase dashboard:
-**Authentication → Emails → Confirm signup / Magic Link** templates — make
-sure the body includes `{{ .Token }}` (Supabase's default template already
-does since 2023; if you've customised it, add it back).
+Sign-in is email + password with no confirmation step — the session is
+granted immediately on sign-up. In your Supabase dashboard: **Authentication
+→ Sign In / Providers → Email**, turn **off** "Confirm email". Without this,
+Supabase will require the user to click a confirmation link before their
+first session is granted, which defeats the point.
 
 ### 3. Configure environment variables
 

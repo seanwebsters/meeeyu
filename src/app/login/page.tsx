@@ -11,44 +11,52 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function sendCode(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { shouldCreateUser: true },
-    });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    setStep("code");
-  }
-
-  async function verifyCode(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token: code,
-      type: "email",
-    });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-      return;
-    }
+  function proceed() {
     router.push("/onboarding");
     router.refresh();
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    // Try signing in first (returning user)…
+    const { data: signInData } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (signInData?.session) {
+      setLoading(false);
+      proceed();
+      return;
+    }
+
+    // …and if that fails, create the account instead (new user) — no email
+    // confirmation step, the session is granted immediately.
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    setLoading(false);
+
+    if (signUpError) {
+      setError(signUpError.message);
+      return;
+    }
+    if (signUpData?.session) {
+      proceed();
+      return;
+    }
+
+    // No error and no session means the email is already registered and the
+    // password above didn't match it.
+    setError("that email is already in use with a different password");
   }
 
   return (
@@ -58,60 +66,35 @@ export default function LoginPage() {
       </Link>
 
       <div className="w-full max-w-sm">
-        {step === "email" ? (
-          <form onSubmit={sendCode} className="space-y-4">
-            <div>
-              <h1 className="text-xl font-semibold">welcome back (or hi!)</h1>
-              <p className="mt-1 text-sm text-ink-soft">
-                enter your email — we&apos;ll send you a one-time code, no
-                password needed.
-              </p>
-            </div>
-            <Input
-              type="email"
-              required
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoFocus
-            />
-            {error && <p className="text-sm text-pink">{error}</p>}
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "sending…" : "send me a code"}
-            </Button>
-          </form>
-        ) : (
-          <form onSubmit={verifyCode} className="space-y-4">
-            <div>
-              <h1 className="text-xl font-semibold">check your inbox</h1>
-              <p className="mt-1 text-sm text-ink-soft">
-                enter the 6-digit code we sent to {email}.
-              </p>
-            </div>
-            <Input
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={6}
-              required
-              placeholder="123456"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="text-center tracking-[0.5em]"
-              autoFocus
-            />
-            {error && <p className="text-sm text-pink">{error}</p>}
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "checking…" : "continue"}
-            </Button>
-            <button
-              type="button"
-              onClick={() => setStep("email")}
-              className="w-full text-center text-sm text-ink-soft underline"
-            >
-              use a different email
-            </button>
-          </form>
-        )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <h1 className="text-xl font-semibold">welcome (or welcome back)</h1>
+            <p className="mt-1 text-sm text-ink-soft">
+              enter your email and a password — you&apos;re straight in, no
+              confirmation step.
+            </p>
+          </div>
+          <Input
+            type="email"
+            required
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoFocus
+          />
+          <Input
+            type="password"
+            required
+            minLength={6}
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {error && <p className="text-sm text-pink">{error}</p>}
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "one sec…" : "continue"}
+          </Button>
+        </form>
       </div>
     </main>
   );
