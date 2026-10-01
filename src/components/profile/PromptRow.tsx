@@ -10,9 +10,11 @@ import type { AggregatedAnswer } from "@/lib/aggregate";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Input";
 import { ShareBar } from "@/components/share/ShareBar";
+import { ShareImageButton } from "@/components/share/ShareImageButton";
 
 export function PromptRow({
   profileId,
+  username,
   promptId,
   question,
   selfAnswer,
@@ -22,6 +24,7 @@ export function PromptRow({
   viewerId,
 }: {
   profileId: string;
+  username: string;
   promptId: string;
   question: string;
   selfAnswer: string | null;
@@ -116,6 +119,18 @@ export function PromptRow({
           )}
         </div>
       </div>
+
+      {selfAnswer && top && (
+        <div className="mt-3">
+          <ShareImageButton
+            imageUrl={`${getSiteUrl()}/${username}/card/${promptId}`}
+            fileName={`${username}-meeeyu.png`}
+            title={question}
+            text={`${question} — me: ${selfAnswer}, you: ${top.answer}`}
+            label="share this result"
+          />
+        </div>
+      )}
 
       {error && <p className="mt-2 text-xs text-pink">{error}</p>}
 

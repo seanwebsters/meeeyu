@@ -23,6 +23,7 @@ import { FollowButton } from "@/components/profile/FollowButton";
 import { PromptRow } from "@/components/profile/PromptRow";
 import { StreakBadge } from "@/components/profile/StreakBadge";
 import { ShareBar } from "@/components/share/ShareBar";
+import { ShareImageButton } from "@/components/share/ShareImageButton";
 import { LinkButton } from "@/components/ui/Button";
 
 export async function generateMetadata({
@@ -35,9 +36,15 @@ export async function generateMetadata({
   const profile = await getProfileByUsername(supabase, username);
   if (!profile) return {};
   const name = profile.display_name || profile.username;
+  const title = `${name} (@${profile.username}) — meeeyu`;
+  const description = profile.bio || `See how ${name}'s friends really see them, on meeeyu.`;
+  const imageUrl = `${getSiteUrl()}/${profile.username}/card`;
+
   return {
-    title: `${name} (@${profile.username}) — meeeyu`,
-    description: profile.bio || `See how ${name}'s friends really see them, on meeeyu.`,
+    title,
+    description,
+    openGraph: { title, description, images: [{ url: imageUrl, width: 1200, height: 630 }] },
+    twitter: { card: "summary_large_image", title, description, images: [imageUrl] },
   };
 }
 
@@ -147,9 +154,15 @@ export default async function ProfilePage({
           )}
         </div>
 
-        <div className="mt-5 w-full max-w-xs">
+        <div className="mt-5 w-full max-w-xs space-y-2">
           <ShareBar
             url={`${getSiteUrl()}/${profile.username}`}
+            title={`${name}'s meeeyu`}
+            text={`come see ${name}'s meeeyu ♡`}
+          />
+          <ShareImageButton
+            imageUrl={`${getSiteUrl()}/${profile.username}/card`}
+            fileName={`${profile.username}-meeeyu.png`}
             title={`${name}'s meeeyu`}
             text={`come see ${name}'s meeeyu ♡`}
           />
@@ -199,6 +212,7 @@ export default async function ProfilePage({
               <PromptRow
                 key={id}
                 profileId={profile.id}
+                username={profile.username}
                 promptId={id}
                 question={prompt.question}
                 selfAnswer={selfByPrompt.get(id) ?? null}
