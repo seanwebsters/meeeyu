@@ -1,0 +1,195 @@
+// A small, consistent line-icon set (1.6px strokes, 24px grid).
+
+type P = React.SVGProps<SVGSVGElement> & { size?: number };
+
+function Svg({ size = 22, children, ...rest }: P) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      {...rest}
+    >
+      {children}
+    </svg>
+  );
+}
+
+export const IconPlay = ({ size = 18, ...p }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden {...p}>
+    <path d="M8 5.6v12.8c0 .9 1 1.4 1.7.9l9.6-6.4a1.1 1.1 0 0 0 0-1.8L9.7 4.7C9 4.2 8 4.7 8 5.6Z" />
+  </svg>
+);
+
+export const IconPause = ({ size = 18, ...p }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden {...p}>
+    <rect x="6.5" y="5" width="3.8" height="14" rx="1.2" />
+    <rect x="13.7" y="5" width="3.8" height="14" rx="1.2" />
+  </svg>
+);
+
+export const IconGroup = (p: P) => (
+  <Svg {...p}>
+    <path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.3-.2-3.3-.6L4 20l1.3-3.6A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5Z" />
+  </Svg>
+);
+export const IconGroupFill = (p: P) => (
+  <Svg {...p} fill="currentColor">
+    <path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.3-.2-3.3-.6L4 20l1.3-3.6A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5Z" />
+  </Svg>
+);
+
+export const IconDiscover = (p: P) => (
+  <Svg {...p}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="m20 20-4.2-4.2" />
+  </Svg>
+);
+
+export const IconBookmark = (p: P) => (
+  <Svg {...p}>
+    <path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.8L6 20V5.5a1 1 0 0 1 1-1Z" />
+  </Svg>
+);
+export const IconBookmarkFill = (p: P) => (
+  <Svg {...p} fill="currentColor">
+    <path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.8L6 20V5.5a1 1 0 0 1 1-1Z" />
+  </Svg>
+);
+
+export const IconUser = (p: P) => (
+  <Svg {...p}>
+    <circle cx="12" cy="8.5" r="3.8" />
+    <path d="M4.8 20c.9-3.6 3.8-5.6 7.2-5.6s6.3 2 7.2 5.6" />
+  </Svg>
+);
+
+export const IconShare = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 15V4m0 0L8 8m4-4 4 4" />
+    <path d="M7 11H6a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 18 11h-1" />
+  </Svg>
+);
+
+export const IconBell = (p: P) => (
+  <Svg {...p}>
+    <path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15L6 16.5Z" />
+    <path d="M10 20.5a2.2 2.2 0 0 0 4 0" />
+  </Svg>
+);
+
+export const IconClose = (p: P) => (
+  <Svg {...p}>
+    <path d="M6 6l12 12M18 6 6 18" />
+  </Svg>
+);
+
+export const IconBack = (p: P) => (
+  <Svg {...p}>
+    <path d="M15 5 8 12l7 7" />
+  </Svg>
+);
+
+export const IconChevron = (p: P) => (
+  <Svg {...p}>
+    <path d="m9 5 7 7-7 7" />
+  </Svg>
+);
+
+export const IconLock = (p: P) => (
+  <Svg {...p}>
+    <rect x="5.5" y="10.5" width="13" height="9" rx="2" />
+    <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+  </Svg>
+);
+
+export const IconCheck = (p: P) => (
+  <Svg {...p}>
+    <path d="m5 12.5 4.2 4L19 7" />
+  </Svg>
+);
+
+export const IconPlus = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </Svg>
+);
+
+export const IconMic = (p: P) => (
+  <Svg {...p}>
+    <rect x="9" y="3.5" width="6" height="11" rx="3" />
+    <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5" />
+  </Svg>
+);
+
+export const IconLink = (p: P) => (
+  <Svg {...p}>
+    <path d="M10 14a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7L11.5 6.8" />
+    <path d="M14 10a4 4 0 0 0-5.7 0l-2.8 2.8a4 4 0 0 0 5.7 5.7l1.3-1.3" />
+  </Svg>
+);
+
+export const IconDownload = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19.5h14" />
+  </Svg>
+);
+
+export const IconSettings = (p: P) => (
+  <Svg {...p}>
+    <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
+    <circle cx="16" cy="7" r="2" />
+    <circle cx="10" cy="17" r="2" />
+  </Svg>
+);
+
+export const IconSpark = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 3.5c.5 4.3 2.2 6 6.5 6.5-4.3.5-6 2.2-6.5 6.5-.5-4.3-2.2-6-6.5-6.5 4.3-.5 6-2.2 6.5-6.5Z" />
+    <path d="M18.5 15.5c.2 1.6.8 2.2 2.5 2.5-1.7.3-2.3.9-2.5 2.5-.2-1.6-.8-2.2-2.5-2.5 1.7-.3 2.3-.9 2.5-2.5Z" />
+  </Svg>
+);
+
+export const IconGrid = (p: P) => (
+  <Svg {...p}>
+    <rect x="4.5" y="4.5" width="6" height="6" rx="1.5" />
+    <rect x="13.5" y="4.5" width="6" height="6" rx="1.5" />
+    <rect x="4.5" y="13.5" width="6" height="6" rx="1.5" />
+    <rect x="13.5" y="13.5" width="6" height="6" rx="1.5" />
+  </Svg>
+);
+
+export const IconArrowDown = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 5v14m0 0 5-5m-5 5-5-5" />
+  </Svg>
+);
+
+/** Verified: a soft, filled seal rather than a loud blue tick. */
+export function Verified({ size = 15, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} aria-label="Verified" role="img">
+      <path
+        fill="currentColor"
+        d="M12 2.5l2.1 1.6 2.6-.3 1 2.4 2.4 1-.3 2.6L21.5 12l-1.6 2.1.3 2.6-2.4 1-1 2.4-2.6-.3L12 21.5l-2.1-1.6-2.6.3-1-2.4-2.4-1 .3-2.6L2.5 12l1.6-2.1-.3-2.6 2.4-1 1-2.4 2.6.3L12 2.5Z"
+      />
+      <path d="m8.3 12.2 2.4 2.3 5-5" fill="none" stroke="var(--cream)" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** The brand mark: a V drawn as a single waveform stroke. */
+export function VMark({ size = 28, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" className={className} aria-hidden>
+      <path d="M6 9.5 16 24 26 9.5" fill="none" stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12.2 9.5v4.2M16 7v6.5M19.8 9.5v4.2" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" />
+    </svg>
+  );
+}

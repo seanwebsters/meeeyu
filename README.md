@@ -1,5 +1,7 @@
 # meeeyu — me + yu
 
+> This repo also contains **VoysNote**, a separate app in [`voysnote/`](voysnote/README.md).
+
 A playful social scrapbook. You build part of your profile; your friends
 build the rest. This is the V1 (MVP) build: Next.js (App Router) + TypeScript
 + Tailwind CSS v4, backed by Supabase (Postgres, Auth, Storage).

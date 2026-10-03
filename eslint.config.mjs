@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // Separate sub-project (React Native/Expo) — its own toolchain, not this
     // Next.js app's.
     "expo-app/**",
+    // VoysNote — a separate Next.js app with its own config.
+    "voysnote/**",
   ]),
 ]);
 
