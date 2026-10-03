@@ -97,10 +97,11 @@ export const appStore = createStore<AppState>(typeof window === "undefined" ? SE
 
 let persistTimer: ReturnType<typeof setTimeout> | undefined;
 let warnedQuota = false;
-appStore.subscribe(() => {
-  if (typeof window === "undefined") return;
+
+function persist() {
   clearTimeout(persistTimer);
-  persistTimer = setTimeout(() => {
+  persistTimer = undefined;
+  {
     const s = appStore.get();
     const out: Persisted = {
       user: s.user,
@@ -134,8 +135,19 @@ appStore.subscribe(() => {
         );
       } catch {}
     }
-  }, 150);
-});
+  }
+}
+
+if (typeof window !== "undefined") {
+  // Writes are batched, but never lost: flush when the page is hidden or closed.
+  appStore.subscribe(() => {
+    clearTimeout(persistTimer);
+    persistTimer = setTimeout(persist, 150);
+  });
+  const flush = () => persistTimer !== undefined && persist();
+  window.addEventListener("pagehide", flush);
+  document.addEventListener("visibilitychange", () => document.visibilityState === "hidden" && flush());
+}
 
 export function useApp<T>(selector: (s: AppState) => T): T {
   return useSyncExternalStore(
