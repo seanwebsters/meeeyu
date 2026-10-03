@@ -16,10 +16,10 @@ export function FollowButton({ creator, size = "sm" }: { creator: Creator; size?
       className={cx(
         "shrink-0 rounded-full font-semibold transition-colors active:scale-95",
         size === "sm" ? "h-8 px-3.5 text-[13px]" : "h-11 px-6 text-[15px]",
-        following ? "border border-ink/15 bg-paper text-ink" : "bg-accent text-cream hover:bg-accent-2",
+        following ? "bg-mist text-ink" : "bg-ink text-cream hover:bg-ink-2",
       )}
     >
-      {following ? "Following" : "Follow"}
+      {following ? "following" : "follow"}
     </button>
   );
 }
@@ -32,7 +32,7 @@ export function CreatorRow({ creator, meta }: { creator: Creator; meta?: string 
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1 text-[15px] font-semibold">
             <span className="truncate">{creator.name}</span>
-            {creator.verified && <Verified size={13} className="shrink-0 text-accent" />}
+            {creator.verified && <Verified size={13} className="shrink-0 text-ink" />}
           </p>
           <p className="truncate text-[13px] text-stone">{meta ?? `${creator.role} · ${formatCount(creator.followers)} followers`}</p>
         </div>
@@ -44,9 +44,9 @@ export function CreatorRow({ creator, meta }: { creator: Creator; meta?: string 
 
 export function FoundingBadge({ className }: { className?: string }) {
   return (
-    <span className={cx("inline-flex items-center gap-1 rounded-full bg-gold-soft px-2.5 py-1 text-[11px] font-semibold text-gold", className)}>
-      <IconStar size={12} />
-      Founding Voice
+    <span className={cx("inline-flex items-center gap-1 rounded-full bg-mist px-2.5 py-1 text-[12px] font-medium text-ink", className)}>
+      <IconStar size={11} />
+      founding voice
     </span>
   );
 }

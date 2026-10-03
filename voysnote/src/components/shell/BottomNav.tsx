@@ -25,7 +25,7 @@ export function BottomNav() {
   const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
   return (
     <>
-      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[460px] border-t border-line/70 bg-paper/90 backdrop-blur-xl">
+      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[460px] bg-cream/[0.97] backdrop-blur-xl">
         <ul className="grid grid-cols-5 items-center">
           {TABS.map((t) => {
             if (!t)
@@ -35,9 +35,9 @@ export function BottomNav() {
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setPlus(true)}
                     aria-label="Add to the group"
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-cream shadow-[0_8px_18px_-8px_rgba(60,74,58,0.7)]"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-cream"
                   >
-                    <IconPlus size={24} strokeWidth={2} />
+                    <IconPlus size={20} strokeWidth={2} />
                   </motion.button>
                 </li>
               );
@@ -47,10 +47,10 @@ export function BottomNav() {
               <li key={t.href}>
                 <Link
                   href={t.href}
-                  className={cx("flex flex-col items-center gap-0.5 pb-2 pt-2.5 text-[10.5px] font-medium", on ? "text-accent" : "text-stone")}
+                  aria-label={t.label}
+                  className={cx("flex h-14 items-center justify-center transition-colors", on ? "text-ink" : "text-stone-2")}
                 >
-                  <Icon size={23} strokeWidth={on ? 1.9 : 1.6} />
-                  {t.label}
+                  <Icon size={23} strokeWidth={on ? 2 : 1.7} />
                 </Link>
               </li>
             );
@@ -135,7 +135,7 @@ function PlusSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
 function Row({ icon, title, body, onClick }: { icon: React.ReactNode; title: string; body: string; onClick: () => void }) {
   return (
     <button onClick={onClick} className="flex w-full items-center gap-3.5 rounded-2xl p-3 text-left hover:bg-mist">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">{icon}</span>
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-mist text-ink">{icon}</span>
       <span>
         <span className="block text-[15px] font-semibold">{title}</span>
         <span className="block text-[13px] text-stone">{body}</span>

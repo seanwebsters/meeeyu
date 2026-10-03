@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { buildFeed } from "@/lib/feed";
+import { buildFeed, listeningNow } from "@/lib/feed";
 import { joinedCreators } from "@/lib/catalog";
 import { buildNotifications } from "@/lib/notifications";
 import { noteToPlayable } from "@/lib/audio/playable";
@@ -12,7 +12,6 @@ import { useApp, useCatalog, useEntitlements } from "@/lib/store/app";
 import { useNow } from "@/lib/store/clock";
 import type { Creator } from "@/lib/types";
 import { cx, firstName, formatCount } from "@/lib/utils";
-import { Avatar } from "../ui/Avatar";
 import { CreatorRow } from "../creator/CreatorRow";
 import { IconArrowDown, IconBell, IconDiscover } from "../icons";
 import { VoiceNoteCard } from "../note/VoiceNoteCard";
@@ -20,9 +19,9 @@ import { ArchiveBanner, DayDivider, JoinedMoment, ListeningLine, PendingIndicato
 
 type Tab = "group" | "following" | "foryou";
 const TABS: [Tab, string][] = [
-  ["group", "Group"],
-  ["following", "Following"],
-  ["foryou", "For You"],
+  ["group", "group"],
+  ["following", "following"],
+  ["foryou", "for you"],
 ];
 
 export function GroupScreen() {
@@ -54,7 +53,6 @@ export function GroupScreen() {
   );
 
   const queue = useMemo(() => playable.map((n) => noteToPlayable(n, idx.creators.get(n.creatorId)!)), [playable, idx]);
-  const members = useMemo(() => joinedCreators(catalog, now), [catalog, now]);
   const unread = useMemo(() => {
     const seen = seenAt ? new Date(seenAt).getTime() : 0;
     return buildNotifications(catalog, follows, now).filter((n) => new Date(n.at).getTime() > seen).length;
@@ -116,51 +114,37 @@ export function GroupScreen() {
 
   return (
     <div className="pb-44">
-      <header className="sticky top-0 z-30 bg-cream/90 backdrop-blur-xl">
-        <div className="flex items-center gap-2 px-5 pb-1 pt-[max(14px,env(safe-area-inset-top))]">
-          <h1 className="wordmark flex-1 text-[22px]">VoysNote</h1>
-          <Link href="/discover?search=1" aria-label="Search" className="rounded-full p-2 text-ink hover:bg-mist">
-            <IconDiscover size={22} />
+      <header className="sticky top-0 z-30 bg-cream/[0.97] backdrop-blur-xl">
+        <div className="flex items-center gap-1 px-5 pb-0.5 pt-[max(14px,env(safe-area-inset-top))]">
+          <h1 className="wordmark flex-1 text-[26px]">VoysNote</h1>
+          <Link href="/discover?search=1" aria-label="Search" className="rounded-full p-2 text-ink">
+            <IconDiscover size={21} />
           </Link>
-          <Link
-            href="/notifications"
-            aria-label={`Notifications${unread ? `, ${unread} new` : ""}`}
-            className="relative -mr-2 rounded-full p-2 text-ink hover:bg-mist"
-          >
-            <IconBell size={22} />
-            {unread > 0 && <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-cream bg-heart" />}
+          <Link href="/notifications" aria-label={`Notifications${unread ? `, ${unread} new` : ""}`} className="relative -mr-2 rounded-full p-2 text-ink">
+            <IconBell size={21} />
+            {unread > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-heart" />}
           </Link>
         </div>
 
-        <div className="flex items-center gap-2 px-5 pb-3 pt-1.5">
-          <div className="flex -space-x-2">
-            {members
-              .slice(-6)
-              .reverse()
-              .map((c) => (
-                <Link key={c.id} href={`/c/${c.username}`}>
-                  <Avatar src={c.avatar} name={c.name} tone={c.tone} size={30} className="rounded-full ring-2 ring-cream" />
-                </Link>
-              ))}
-          </div>
-          <span className="text-[12px] text-stone">+{formatCount(GROUP_SIZE)} in the group</span>
-        </div>
+        <p className="flex items-center gap-1.5 px-5 text-[12px] text-stone">
+          <span className="live-dot h-1.5 w-1.5 rounded-full bg-live" />
+          {formatCount(GROUP_SIZE)} in the group · {listeningNow(now).toLocaleString("en-GB")} listening
+        </p>
 
-        <nav className="flex gap-6 border-b border-line px-5">
+        <nav className="flex gap-5 px-5 pb-3 pt-3">
           {TABS.map(([k, label]) => (
             <button
               key={k}
               onClick={() => switchTab(k)}
-              className={cx("relative pb-2.5 text-[14px] font-medium transition-colors", tab === k ? "text-ink" : "text-stone")}
+              className={cx("relative text-[15px] font-semibold tracking-[-0.01em] transition-colors", tab === k ? "text-ink" : "text-stone-2")}
             >
               {label}
-              {tab === k && <motion.span layoutId="group-tab" className="absolute inset-x-0 -bottom-px h-[2px] rounded-full bg-accent" />}
             </button>
           ))}
         </nav>
       </header>
 
-      <div className="space-y-3 px-4 pt-4">
+      <div className="space-y-7 px-5 pt-3">
         {tab !== "group" && noteCount === 0 && <EmptyTab tab={tab} />}
         {items.map((item) => {
           switch (item.kind) {

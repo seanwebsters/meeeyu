@@ -52,14 +52,14 @@ export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?:
         aria-label={mine ? "Remove reaction" : "Like"}
         aria-pressed={!!mine}
         className={cx(
-          "flex h-9 select-none items-center gap-1.5 rounded-full pl-1.5 pr-2.5 text-[13px] font-medium tabular-nums transition-colors disabled:opacity-40",
-          mine ? "text-heart" : "text-ink-2 hover:bg-mist",
+          "flex h-9 select-none items-center gap-1.5 rounded-full px-1.5 text-[12px] tabular-nums transition-colors disabled:opacity-40",
+          mine ? "text-heart" : "text-stone hover:text-ink",
         )}
       >
         <motion.span key={burst} initial={burst ? { scale: 0.6 } : false} animate={{ scale: 1 }} transition={{ type: "spring", damping: 9, stiffness: 420 }}>
-          {mine && mine !== "❤️" ? <span className="text-[16px] leading-none">{mine}</span> : mine ? <IconHeartFill size={20} /> : <IconHeart size={20} />}
+          {mine && mine !== "❤️" ? <span className="text-[16px] leading-none">{mine}</span> : mine ? <IconHeartFill size={18} /> : <IconHeart size={18} />}
         </motion.span>
-        {total > 0 && <span className={mine ? "text-heart" : "text-ink-2"}>{formatCount(total)}</span>}
+        {total > 0 && <span className={mine ? "text-heart" : "text-stone"}>{formatCount(total)}</span>}
       </button>
 
       <AnimatePresence>

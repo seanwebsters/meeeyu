@@ -37,7 +37,7 @@ export default function ProfilePage() {
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-cream">
           <span className="display text-[30px]">{initials(user.name)}</span>
         </div>
-        <h1 className="display mt-4 text-[30px]">{user.name}</h1>
+        <h1 className="display mt-4 text-[40px]">{user.name.toLowerCase()}</h1>
         <p className="mt-1 text-[14px] text-stone">
           In the group since {new Date(user.joinedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}
           {plus && " · VoysNote+"}
@@ -74,7 +74,7 @@ export default function ProfilePage() {
             <p className="relative flex items-center gap-1.5 text-[13px] font-semibold text-gold">
               <IconCrown size={16} /> VoysNote+
             </p>
-            <p className="display relative mt-2 text-[24px]">Go deeper. Hear everything first.</p>
+            <p className="display relative mt-2 text-[24px]">go deeper. hear everything first.</p>
             <p className="relative mt-1.5 text-[13px] text-ink-2">The full archive, exclusive notes and early access. £5.99/month.</p>
             <ButtonLink href="/plus" size="sm" className="relative mt-4">
               Explore VoysNote+
@@ -85,7 +85,7 @@ export default function ProfilePage() {
 
       {follows.length > 0 && (
         <section className="px-5 pt-8">
-          <h2 className="mb-3 text-[16px] font-semibold">Following</h2>
+          <h2 className="mb-3 text-[13px] font-medium lowercase text-stone">following</h2>
           <div className="no-scrollbar -mx-5 flex gap-3 overflow-x-auto px-5">
             {follows.map((id) => {
               const c = idx.creators.get(id);
@@ -103,7 +103,7 @@ export default function ProfilePage() {
 
       {purchases.length > 0 && (
         <section className="px-5 pt-8">
-          <h2 className="mb-1 text-[16px] font-semibold">Your series</h2>
+          <h2 className="mb-1 text-[13px] font-medium lowercase text-stone">your series</h2>
           {purchases.map((id) => {
             const s = idx.series.get(id);
             if (!s) return null;
@@ -117,7 +117,7 @@ export default function ProfilePage() {
       )}
 
       <section className="px-5 pt-8">
-        <h2 className="mb-1 text-[16px] font-semibold">Listening</h2>
+        <h2 className="mb-1 text-[13px] font-medium lowercase text-stone">listening</h2>
         <Toggle
           label="Autoplay next note"
           hint="Keep the group playing, one voice after another"
@@ -133,7 +133,7 @@ export default function ProfilePage() {
       </section>
 
       <section className="px-5 pt-8">
-        <h2 className="mb-1 text-[16px] font-semibold">More</h2>
+        <h2 className="mb-1 text-[13px] font-medium lowercase text-stone">more</h2>
         <Row href="/notifications">Notifications</Row>
         <Row href="/admin">
           <span className="flex items-center gap-2">

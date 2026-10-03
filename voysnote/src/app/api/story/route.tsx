@@ -7,7 +7,7 @@ import { makeWaveform } from "@/lib/utils";
 
 const CREAM = "#f4f0e8";
 const INK = "#1d1c19";
-const MOSS = "#3c4a3a";
+const MOSS = "#121211";
 const STONE = "#8a8378";
 
 async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | null> {

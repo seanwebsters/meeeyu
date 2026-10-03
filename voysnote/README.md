@@ -80,11 +80,14 @@ mirrors the same rules on the server.
 
 ### Design
 
-Cream background, white cards and near-black type. One restrained accent,
-deep moss green (`--accent`), is used for primary buttons, play buttons,
-progress and the active tab. A muted gold marks Founding Voices and
-VoysNote+. Inter is used throughout. The tokens live in
-`src/app/globals.css`.
+Minimal and near-monochrome: warm off-white, near-black type and actions,
+lowercase microcopy and wordmark ("voysnote"), and big, tight headings.
+Surfaces are flat, with no borders or shadows. Notes read as a thread;
+only the playing note gets a surface. A single small green (`--live`) marks
+what's happening now: live dots, playback progress and "joining"
+indicators. The nav is icons only. The tokens live in
+`src/app/globals.css`; to bring back the moss-green buttons, set `--accent`
+to `#3c4a3a`.
 
 Navigation is Home / Discover / **+** / Saved / Profile. Listeners don't
 post, so the **+** button grows the group instead: invite a friend,

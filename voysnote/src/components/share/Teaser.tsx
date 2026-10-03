@@ -38,7 +38,7 @@ export function Teaser({ id }: { id: string }) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center px-8 text-center">
         <VMark size={40} />
-        <h1 className="display mt-6 text-[40px]">This note is in the group.</h1>
+        <h1 className="display mt-6 text-[40px]">this note is in the group.</h1>
         <ButtonLink href={hydrated && hasUser ? "/" : "/welcome"} className="mt-8">
           Join the group
         </ButtonLink>
@@ -64,7 +64,7 @@ export function Teaser({ id }: { id: string }) {
           <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={120} pulse={playing} />
         </motion.div>
         <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone">The Group</p>
-        <h1 className="display mt-2 text-[34px] uppercase leading-[0.95]">{storyHeadline(creator, isFirst)}</h1>
+        <h1 className="display mt-2 text-[40px] lowercase">{storyHeadline(creator, isFirst)}</h1>
         <p className="mt-3 flex items-center gap-1 text-[14px] text-ink-2">
           {creator.name} {creator.verified && <Verified size={13} />} · {creator.role}
         </p>

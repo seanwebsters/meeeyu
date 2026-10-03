@@ -11,48 +11,34 @@ import { actions, useApp } from "@/lib/store/app";
 import { useNow } from "@/lib/store/clock";
 import { ago, cx, firstName, initials, relativeFuture } from "@/lib/utils";
 import { Avatar } from "../ui/Avatar";
-import { IconBell, IconLock, IconStar, Verified } from "../icons";
+import { IconBell, IconLock, Verified } from "../icons";
 import { toast } from "../ui/Toast";
 
 export function DayDivider({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-3 px-2 py-1">
-      <span className="h-px flex-1 bg-line" />
-      <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-stone">{label}</span>
-      <span className="h-px flex-1 bg-line" />
-    </div>
-  );
+  return <p className="pt-2 text-center text-[12px] font-medium lowercase text-stone-2">{label}</p>;
 }
 
-/** The magic moment: someone interesting just joined. */
+/** The magic moment: someone interesting just joined. A quiet line, not a card. */
 export function JoinedMoment({ creator, at }: { creator: Creator; at: string }) {
   const following = useApp((s) => s.follows.includes(creator.id));
   const now = useNow();
   const [fresh] = useState(() => Date.now() - new Date(at).getTime() < 10_000);
   return (
     <motion.div
-      initial={fresh ? { opacity: 0, scale: 0.9, y: 10 } : false}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ type: "spring", damping: 18, stiffness: 220 }}
-      className={cx("flex items-center gap-3 rounded-[18px] px-3.5 py-3", fresh ? "bg-accent-soft" : "bg-mist/70")}
+      initial={fresh ? { opacity: 0, y: 8 } : false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", damping: 20, stiffness: 220 }}
+      className="flex items-center gap-2.5"
     >
       <Link href={`/c/${creator.username}`} className="relative shrink-0">
-        {fresh && <span className="pulse-ring absolute inset-0 rounded-full bg-accent/40" />}
-        <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={38} />
+        {fresh && <span className="pulse-ring absolute inset-0 rounded-full bg-live/40" />}
+        <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={28} />
       </Link>
-      <Link href={`/c/${creator.username}`} className="min-w-0 flex-1">
-        <p className="truncate text-[14px] text-ink">
-          <span className="font-semibold">{firstName(creator.name)}</span> joined the group
-          {creator.verified && <Verified size={13} className="ml-1 inline -translate-y-px text-accent" />}
-        </p>
-        <p className="flex items-center gap-1 truncate text-[12px] text-stone">
-          {creator.foundingVoice && (
-            <span className="inline-flex items-center gap-0.5 font-medium text-gold">
-              <IconStar size={11} /> Founding Voice ·
-            </span>
-          )}
-          {creator.role} · {ago(at, now)}
-        </p>
+      <Link href={`/c/${creator.username}`} className="min-w-0 flex-1 truncate text-[14px] text-stone">
+        <span className="font-semibold text-ink">{firstName(creator.name)}</span>
+        {creator.verified && <Verified size={12} className="ml-0.5 inline -translate-y-px text-ink" />} joined the group
+        <span className="text-stone-2"> · {ago(at, now)}</span>
+        {fresh && <span className="live-dot ml-1.5 inline-block h-1.5 w-1.5 -translate-y-0.5 rounded-full bg-live" />}
       </Link>
       {!following && (
         <button
@@ -61,11 +47,11 @@ export function JoinedMoment({ creator, at }: { creator: Creator; at: string }) 
             toast(`Following ${firstName(creator.name)}`);
           }}
           className={cx(
-            "shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-semibold",
-            fresh ? "bg-accent text-cream" : "border border-ink/10 bg-paper text-ink",
+            "shrink-0 rounded-full px-3 py-1 text-[12px] font-semibold",
+            fresh ? "bg-ink text-cream" : "text-ink underline-offset-2 hover:underline",
           )}
         >
-          Follow
+          follow
         </button>
       )}
     </motion.div>
@@ -73,28 +59,22 @@ export function JoinedMoment({ creator, at }: { creator: Creator; at: string }) 
 }
 
 export function YouJoined() {
-  return (
-    <div className="flex justify-center py-1">
-      <span className="rounded-full bg-paper px-3.5 py-1.5 text-[12px] text-ink-2 ring-1 ring-line">
-        <span className="mr-1">👋</span> You joined the group
-      </span>
-    </div>
-  );
+  return <p className="text-center text-[12px] text-stone">you joined the group 👋</p>;
 }
 
 export function ListeningLine({ count }: { count: number }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-1 text-[12px] text-stone">
-      <span className="live-dot h-1.5 w-1.5 rounded-full bg-accent" />
-      {count.toLocaleString("en-GB")} people are listening right now
+    <div className="flex items-center justify-center gap-2 text-[12px] text-stone">
+      <span className="live-dot h-1.5 w-1.5 rounded-full bg-live" />
+      {count.toLocaleString("en-GB")} listening right now
     </div>
   );
 }
 
 export function ArchiveBanner({ count }: { count: number }) {
   return (
-    <Link href="/plus" className="card flex items-center gap-3 px-4 py-3.5">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+    <Link href="/plus" className="flex items-center gap-3">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-mist text-ink">
         <IconLock size={17} />
       </span>
       <span className="text-[13px] leading-snug text-ink-2">
@@ -117,20 +97,20 @@ export function PendingIndicator({ pending }: { pending: Pending }) {
     const tick = Math.floor(now / 2500);
     const names = [0, 1, 2].map((i) => listenerName(tick + i * 5));
     return (
-      <motion.div key="joining" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="card flex flex-col items-center px-5 py-6 text-center">
+      <motion.div key="joining" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center py-4 text-center">
         <div className="flex items-center -space-x-2.5">
           {[0, 1].map((i) => (
-            <span key={i} className="relative h-11 w-11 rounded-full border-2 border-paper bg-gradient-to-br from-stone-2 to-mist blur-[0.5px]" />
+            <span key={i} className="relative h-10 w-10 rounded-full border-2 border-cream bg-gradient-to-br from-stone-2 to-mist blur-[0.5px]" />
           ))}
-          <span className="relative flex h-11 w-11 items-center justify-center rounded-full border-2 border-paper bg-mist text-[12px] font-semibold text-ink-2">
+          <span className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-cream bg-mist text-[12px] font-semibold text-ink-2">
             +3
           </span>
         </div>
-        <p className="mt-4 flex items-center gap-2 text-[16px] font-semibold">
-          Someone new is joining
+        <p className="mt-4 flex items-center gap-2 text-[18px] font-semibold tracking-[-0.02em]">
+          someone new is joining
           <Dots />
         </p>
-        <p className="mt-1 text-[12px] text-stone">{listeningNow(now).toLocaleString("en-GB")} people are listening right now</p>
+        <p className="mt-1 text-[12px] text-stone">{listeningNow(now).toLocaleString("en-GB")} listening right now</p>
         <ul className="mt-4 w-full max-w-[220px] space-y-2 text-left">
           {names.map((n, i) => (
             <motion.li
@@ -141,7 +121,7 @@ export function PendingIndicator({ pending }: { pending: Pending }) {
               className="flex items-center gap-2.5 text-[12px] text-stone"
             >
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mist text-[9px] font-semibold text-ink-2">{initials(n)}</span>
-              {n} is joining…
+              {n.toLowerCase()} is joining…
             </motion.li>
           ))}
         </ul>
@@ -151,29 +131,29 @@ export function PendingIndicator({ pending }: { pending: Pending }) {
 
   if (pending.kind === "recording") {
     return (
-      <motion.div key="recording" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="card flex items-center gap-3 px-4 py-3.5">
-        <Avatar src={pending.creator.avatar} name={pending.creator.name} tone={pending.creator.tone} size={38} />
+      <motion.div key="recording" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2.5">
+        <Avatar src={pending.creator.avatar} name={pending.creator.name} tone={pending.creator.tone} size={28} />
         <span className="flex h-4 items-center gap-[3px]">
           {[0, 1, 2, 3, 4].map((i) => (
-            <span key={i} className="wave-live w-[3px] rounded-full bg-accent" style={{ height: `${40 + ((i * 37) % 60)}%`, animationDelay: `${i * 0.12}s` }} />
+            <span key={i} className="wave-live w-[3px] rounded-full bg-live" style={{ height: `${40 + ((i * 37) % 60)}%`, animationDelay: `${i * 0.12}s` }} />
           ))}
         </span>
-        <span className="text-[13px] text-ink-2">{firstName(pending.creator.name)} is recording a voice note…</span>
+        <span className="text-[14px] text-stone">
+          <b className="font-semibold text-ink">{firstName(pending.creator.name)}</b> is recording…
+        </span>
       </motion.div>
     );
   }
 
   return (
     <div className="card relative flex flex-col items-center overflow-hidden px-5 py-6 text-center">
-      <span className="absolute -right-10 -top-12 h-36 w-36 rounded-full bg-accent-soft" />
-      <span className="absolute -bottom-14 -left-10 h-32 w-32 rounded-full bg-gold-soft/70" />
       <div className="relative flex -space-x-2.5">
         {[0, 1, 2].map((i) => (
           <span key={i} className="h-10 w-10 rounded-full border-2 border-paper bg-gradient-to-br from-stone-2 to-mist" />
         ))}
       </div>
-      <p className="relative mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone">Who&apos;s next?</p>
-      <p className="display relative mt-1.5 text-[22px]">Someone new joins {relativeFuture(pending.at, now)}</p>
+      <p className="relative mt-3 text-[12px] text-stone">who&apos;s next?</p>
+      <p className="display relative mt-1.5 text-[24px]">someone new joins {relativeFuture(pending.at, now)}</p>
       <button
         onClick={() => {
           setNotify(true);
@@ -181,10 +161,10 @@ export function PendingIndicator({ pending }: { pending: Pending }) {
         }}
         className={cx(
           "relative mt-4 flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors",
-          notify ? "bg-accent-soft text-accent" : "bg-accent text-cream",
+          notify ? "bg-mist text-ink" : "bg-ink text-cream",
         )}
       >
-        <IconBell size={16} /> {notify ? "You'll be notified" : "Notify me"}
+        <IconBell size={16} /> {notify ? "you'll know" : "notify me"}
       </button>
     </div>
   );
@@ -194,7 +174,7 @@ function Dots() {
   return (
     <span className="flex items-center gap-[3px]">
       {[0, 1, 2].map((i) => (
-        <span key={i} className="typing-dot h-1.5 w-1.5 rounded-full bg-accent" style={{ animationDelay: `${i * 0.18}s` }} />
+        <span key={i} className="typing-dot h-1.5 w-1.5 rounded-full bg-live" style={{ animationDelay: `${i * 0.18}s` }} />
       ))}
     </span>
   );

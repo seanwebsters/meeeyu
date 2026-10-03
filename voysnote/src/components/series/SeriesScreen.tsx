@@ -141,7 +141,7 @@ export function SeriesScreen({ id }: { id: string }) {
       )}
 
       <section className="px-5 pt-8">
-        <h2 className="mb-1 text-[16px] font-semibold">The notes</h2>
+        <h2 className="mb-1 text-[13px] font-medium lowercase text-stone">the notes</h2>
         <ul className="divide-y divide-line/60">
           {episodes.map((ep) => (
             <EpisodeRow

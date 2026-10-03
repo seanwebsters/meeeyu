@@ -44,7 +44,7 @@ export function CreatorScreen({ username }: { username: string }) {
     return (
       <div className="flex min-h-[80dvh] flex-col items-center justify-center px-8 text-center">
         <div className="h-24 w-24 rounded-full bg-gradient-to-br from-stone-2 to-mist" />
-        <h1 className="display mt-6 text-[28px]">Not in the group. Yet.</h1>
+        <h1 className="display mt-6 text-[28px]">not in the group. yet.</h1>
         <p className="mt-2 text-[14px] text-stone">Turn on notifications and you&apos;ll know the moment they join.</p>
         <Link href="/" className="mt-6 rounded-full bg-accent px-5 py-2.5 text-[14px] font-semibold text-cream">
           Back to the group
@@ -87,13 +87,13 @@ export function CreatorScreen({ username }: { username: string }) {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="relative -mt-7 rounded-t-[28px] bg-cream px-5 pt-6"
+        className="relative -mt-7 rounded-t-[28px] bg-cream px-5 pt-7"
       >
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
-            <h1 className="flex items-center gap-1.5 text-[24px] font-semibold leading-tight tracking-[-0.02em]">
+            <h1 className="flex items-center gap-1.5 text-[30px] font-semibold leading-tight tracking-[-0.04em]">
               <span className="truncate">{creator.name}</span>
-              {creator.verified && <Verified size={18} className="shrink-0 text-gold" />}
+              {creator.verified && <Verified size={18} className="shrink-0 text-ink" />}
             </h1>
             <p className="mt-0.5 text-[13px] text-stone">
               {creator.role} · {creator.category}
@@ -104,22 +104,25 @@ export function CreatorScreen({ username }: { username: string }) {
         {creator.foundingVoice && <FoundingBadge className="mt-3" />}
         <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{creator.bio}</p>
 
-        <div className="mt-5 grid grid-cols-3 divide-x divide-line rounded-[18px] border border-line bg-paper py-3 text-center">
+        <div className="mt-5 flex gap-8">
           <Stat value={formatCount(creator.followers + (following ? 1 : 0))} label="Followers" />
           <Stat value={String(notes.length)} label="VoysNotes" />
           <Stat value={String(series.length)} label="Series" />
         </div>
 
-        <nav className="mt-6 flex gap-6 border-b border-line">
+        <nav className="mt-7 flex gap-5">
           {(
             [
               ["notes", "VoysNotes"],
               ["about", "About"],
             ] as const
           ).map(([k, label]) => (
-            <button key={k} onClick={() => setTab(k)} className={cx("relative pb-2.5 text-[14px] font-medium", tab === k ? "text-ink" : "text-stone")}>
+            <button
+              key={k}
+              onClick={() => setTab(k)}
+              className={cx("relative text-[15px] font-semibold lowercase tracking-[-0.01em]", tab === k ? "text-ink" : "text-stone-2")}
+            >
               {label}
-              {tab === k && <motion.span layoutId="creator-tab" className="absolute inset-x-0 -bottom-px h-[2px] rounded-full bg-accent" />}
             </button>
           ))}
         </nav>
@@ -189,8 +192,8 @@ export function CreatorScreen({ username }: { username: string }) {
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <p className="text-[17px] font-semibold tabular-nums">{value}</p>
-      <p className="text-[11px] text-stone">{label}</p>
+      <p className="text-[20px] font-semibold tabular-nums tracking-[-0.02em]">{value}</p>
+      <p className="text-[12px] lowercase text-stone">{label}</p>
     </div>
   );
 }

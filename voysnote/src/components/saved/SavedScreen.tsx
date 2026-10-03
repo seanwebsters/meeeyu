@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { noteAccess, ownsSeries, unlockedEpisodes } from "@/lib/access";
 import { noteToPlayable } from "@/lib/audio/playable";
@@ -76,7 +75,7 @@ export function SavedScreen() {
 
   return (
     <div className="pb-40">
-      <header className="sticky top-0 z-20 bg-cream/90 px-5 pt-[max(14px,env(safe-area-inset-top))] backdrop-blur-xl">
+      <header className="sticky top-0 z-20 bg-cream/[0.97] px-5 pt-[max(14px,env(safe-area-inset-top))] backdrop-blur-xl">
         <div className="flex h-10 items-center gap-1">
           <span className="wordmark flex-1 text-[22px]">VoysNote</span>
           <Link href="/discover?search=1" aria-label="Search" className="rounded-full p-2 hover:bg-mist">
@@ -91,16 +90,19 @@ export function SavedScreen() {
             <h1 className="display mt-1 text-[28px]">{current.name}</h1>
           </div>
         ) : (
-          <nav className="mt-2 flex gap-6 border-b border-line">
+          <nav className="mt-1 flex gap-5 pb-1">
             {(
               [
                 ["saved", "Saved"],
                 ["collections", "Collections"],
               ] as const
             ).map(([k, label]) => (
-              <button key={k} onClick={() => setTab(k)} className={cx("relative pb-2.5 text-[14px] font-medium", tab === k ? "text-ink" : "text-stone")}>
+              <button
+                key={k}
+                onClick={() => setTab(k)}
+                className={cx("relative text-[15px] font-semibold lowercase tracking-[-0.01em]", tab === k ? "text-ink" : "text-stone-2")}
+              >
                 {label}
-                {tab === k && <motion.span layoutId="saved-tab" className="absolute inset-x-0 -bottom-px h-[2px] rounded-full bg-accent" />}
               </button>
             ))}
           </nav>
@@ -116,8 +118,8 @@ export function SavedScreen() {
           )
         ) : tab === "saved" ? (
           <>
-            <button onClick={() => setCreating(true)} className="flex w-full items-center gap-3.5 rounded-[18px] bg-mist/70 p-3.5 text-left">
-              <span className="flex h-12 w-12 items-center justify-center rounded-[12px] border border-line bg-paper text-ink-2">
+            <button onClick={() => setCreating(true)} className="flex w-full items-center gap-3.5 text-left">
+              <span className="flex h-[52px] w-[52px] items-center justify-center rounded-[12px] bg-mist text-ink">
                 <IconPlus size={22} />
               </span>
               <span>
@@ -133,7 +135,7 @@ export function SavedScreen() {
                   onClick={() => setFilter(k)}
                   className={cx(
                     "h-8 shrink-0 rounded-full px-3.5 text-[13px] font-medium transition-colors",
-                    filter === k ? "bg-accent text-cream" : "border border-line bg-paper text-ink-2",
+                    filter === k ? "bg-ink text-cream" : "bg-mist text-ink-2",
                   )}
                 >
                   {label}

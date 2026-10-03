@@ -82,20 +82,21 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: "spring", damping: 26, stiffness: 260 }}
       className={cx(
-        "card relative overflow-hidden transition-[box-shadow,border-color] duration-300",
-        active && "border-accent/20 shadow-[0_18px_40px_-22px_rgba(60,74,58,0.55)]",
+        // Flat: no card. The note only gets a surface while it plays.
+        "relative -mx-2 overflow-hidden rounded-[22px] transition-colors duration-300",
+        active ? "bg-paper" : "bg-transparent",
       )}
     >
-      <div className={cx("transition-[padding] duration-300", active ? "px-[18px] pb-2 pt-[18px]" : "px-4 pb-1.5 pt-4")}>
+      <div className={cx("transition-[padding] duration-300", active ? "px-4 pb-2 pt-4" : "px-2 pb-0 pt-1")}>
         {showHeader && (
-          <header className="mb-3 flex items-center gap-3">
+          <header className="mb-2.5 flex items-center gap-2.5">
             <Link href={`/c/${creator.username}`} aria-label={creator.name} className="shrink-0">
-              <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={40} pulse={playing} />
+              <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={32} pulse={playing} />
             </Link>
             <div className="min-w-0 flex-1">
-              <Link href={`/c/${creator.username}`} className="flex items-center gap-1 text-[14px] font-semibold leading-tight">
+              <Link href={`/c/${creator.username}`} className="flex items-center gap-1 text-[14px] font-semibold leading-tight tracking-[-0.01em]">
                 <span className="truncate">{creator.name}</span>
-                {creator.verified && <Verified className="shrink-0 text-accent" size={14} />}
+                {creator.verified && <Verified className="shrink-0 text-ink" size={13} />}
               </Link>
               <p className="truncate text-[12px] text-stone">
                 {creator.role} · {ago(note.publishedAt, now)}
@@ -108,9 +109,9 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
         )}
 
         <div className="flex items-start justify-between gap-2">
-          <p className={cx("leading-snug text-ink transition-[font-size] duration-300", active ? "text-[16px] font-medium" : "text-[15px]")}>{note.title}</p>
+          <p className={cx("text-[19px] font-semibold leading-[1.2] tracking-[-0.025em] text-ink")}>{note.title}</p>
           {access.state === "open" && access.early && (
-            <span className="mt-0.5 shrink-0 rounded-full bg-gold-soft px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">Early</span>
+            <span className="mt-0.5 shrink-0 rounded-full border border-ink/15 px-2 py-0.5 text-[11px] font-medium text-ink-2">early</span>
           )}
         </div>
 
@@ -119,7 +120,7 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
             onClick={play}
             aria-label={locked ? "Unlock with VoysNote+" : playing ? "Pause" : "Play"}
             className={cx(
-              "flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-transform duration-200 active:scale-90",
+              "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-transform duration-200 active:scale-90",
               locked ? "bg-mist text-ink-2" : "bg-accent text-cream",
             )}
           >
@@ -147,8 +148,8 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden"
             >
-              <div className="mt-3 flex items-baseline justify-between gap-3 rounded-2xl bg-accent-soft/60 px-3.5 py-2.5">
-                <p className="min-h-[2.6em] text-[13px] leading-snug text-ink-2">
+              <div className="mt-3 flex items-baseline justify-between gap-3">
+                <p className="min-h-[2.6em] text-[14px] leading-snug text-stone">
                   <motion.span key={captionAt(note.transcript, progress)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}>
                     {captionAt(note.transcript, progress)}
                   </motion.span>
@@ -160,26 +161,26 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
         </AnimatePresence>
 
         {lockLabel && (
-          <button onClick={play} className="mt-2.5 flex items-center gap-1.5 text-[12px] font-medium text-accent">
+          <button onClick={play} className="mt-2.5 flex items-center gap-1.5 text-[12px] font-medium text-ink-2">
             <IconLock size={13} />
             {lockLabel}
           </button>
         )}
 
-        <footer className="mt-2 flex items-center gap-1">
+        <footer className="-ml-1.5 mt-1.5 flex items-center gap-0.5">
           <ReactionButton note={note} disabled={locked} />
           <button
             onClick={() => openReplies(note.id)}
             disabled={locked}
             aria-label={`${replies} replies`}
-            className="flex h-9 items-center gap-1.5 rounded-full px-2.5 text-[13px] font-medium tabular-nums text-ink-2 hover:bg-mist disabled:opacity-40"
+            className="flex h-9 items-center gap-1.5 rounded-full px-2 text-[12px] tabular-nums text-stone hover:text-ink disabled:opacity-40"
           >
-            <IconComment size={19} />
+            <IconComment size={18} />
             {replies > 0 && formatCount(replies)}
           </button>
           {sponsor ? (
             <a href={sponsor.url} target="_blank" rel="noreferrer sponsored" className="mx-auto truncate px-1 text-[11px] text-stone">
-              Presented by <span className="font-semibold text-ink-2">{sponsor.name}</span>
+              presented by <span className="font-medium text-ink-2">{sponsor.name}</span>
             </a>
           ) : (
             <span className="flex-1" />
@@ -191,18 +192,18 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
             }}
             aria-label={saved ? "Unsave" : "Save"}
             aria-pressed={saved}
-            className={cx("rounded-full p-2 transition-colors hover:bg-mist", saved ? "text-accent" : "text-ink-2")}
+            className={cx("rounded-full p-2 transition-colors", saved ? "text-ink" : "text-stone hover:text-ink")}
           >
-            {saved ? <IconBookmarkFill size={19} /> : <IconBookmark size={19} />}
+            {saved ? <IconBookmarkFill size={18} /> : <IconBookmark size={18} />}
           </button>
-          <button onClick={() => openShare(note.id)} aria-label="Share" className="-mr-1.5 rounded-full p-2 text-ink-2 transition-colors hover:bg-mist">
-            <IconShare size={19} />
+          <button onClick={() => openShare(note.id)} aria-label="Share" className="-mr-1.5 rounded-full p-2 text-stone transition-colors hover:text-ink">
+            <IconShare size={18} />
           </button>
         </footer>
       </div>
       {active && (
-        <div className="absolute inset-x-0 bottom-0 h-[3px] bg-mist">
-          <div className="h-full bg-accent transition-[width] duration-150 ease-linear" style={{ width: `${progress * 100}%` }} />
+        <div className="absolute inset-x-0 bottom-0 h-[2px] bg-mist">
+          <div className="h-full bg-live transition-[width] duration-150 ease-linear" style={{ width: `${progress * 100}%` }} />
         </div>
       )}
     </motion.article>

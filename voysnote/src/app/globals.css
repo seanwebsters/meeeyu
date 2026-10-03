@@ -1,20 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --cream: #f4f0e8;
-  --paper: #fffdf9;
-  --mist: #ece7de;
-  --line: #e7e1d6;
-  --stone: #8b857b;
-  --stone-2: #bab3a7;
-  --ink-2: #47433d;
-  --ink: #1d1c19;
-  --accent: #3c4a3a;
-  --accent-2: #55654f;
-  --accent-soft: #e3e8da;
-  --gold: #c39a45;
-  --gold-soft: #f3e9d1;
+  /* Minimal: warm off-white, near-black, one small green "live" signal. */
+  --cream: #f5f3ee;
+  --paper: #fbfaf7;
+  --mist: #ebe9e3;
+  --line: #e4e1da;
+  --stone: #8e8a82;
+  --stone-2: #bdb9b0;
+  --ink-2: #4a4741;
+  --ink: #121211;
+  /* Primary actions are ink; swap these three back to moss for the green look. */
+  --accent: #121211;
+  --accent-2: #2c2b28;
+  --accent-soft: #ebe9e3;
+  --gold: #4a4741;
+  --gold-soft: #ebe9e3;
   --heart: #e0473d;
+  --live: #3f6b4a;
 }
 
 @theme inline {
@@ -32,6 +35,7 @@
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
   --color-heart: var(--heart);
+  --color-live: var(--live);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -61,7 +65,7 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: 60;
-  opacity: 0.22;
+  opacity: 0.12;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.3  0 0 0 0 0.25  0 0 0 0.09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
@@ -73,22 +77,21 @@ body::after {
 .wordmark {
   font-family: var(--font-inter);
   font-weight: 700;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.06em;
+  text-transform: lowercase;
 }
 
 .display {
   font-family: var(--font-inter);
-  font-weight: 650;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
 
-/* Soft card: white on cream, hairline border, a whisper of shadow. */
+/* Flat surface: no border, no shadow. */
 .card {
   background: var(--paper);
-  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
-  border-radius: 22px;
-  box-shadow: 0 1px 2px rgba(29, 28, 25, 0.03), 0 8px 24px -18px rgba(29, 28, 25, 0.18);
+  border-radius: 20px;
 }
 
 .no-scrollbar::-webkit-scrollbar {

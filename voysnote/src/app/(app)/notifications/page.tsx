@@ -53,14 +53,14 @@ export default function NotificationsPage() {
 
   return (
     <div className="pb-40">
-      <header className="sticky top-0 z-20 bg-cream/90 px-5 pt-[max(14px,env(safe-area-inset-top))] backdrop-blur-xl">
+      <header className="sticky top-0 z-20 bg-cream/[0.97] px-5 pt-[max(14px,env(safe-area-inset-top))] backdrop-blur-xl">
         <div className="flex h-10 items-center">
           <span className="wordmark flex-1 text-[22px]">VoysNote</span>
           <Link href="/profile" aria-label="Settings" className="-mr-2 rounded-full p-2 hover:bg-mist">
             <IconSettings size={22} />
           </Link>
         </div>
-        <h1 className="display pb-2 pt-3 text-[28px]">Notifications</h1>
+        <h1 className="display pb-2 pt-3 text-[40px]">notifications</h1>
       </header>
 
       {follows.length === 0 && (
@@ -71,7 +71,7 @@ export default function NotificationsPage() {
 
       {groups.map((g) => (
         <section key={g.label} className="px-5 pt-3">
-          <h2 className="pb-1 text-[14px] font-semibold">{g.label}</h2>
+          <h2 className="pb-1 text-[13px] font-medium lowercase text-stone">{g.label}</h2>
           <ul className="divide-y divide-line/60">
             {g.items.map((n) => (
               <Row key={n.id} n={n} fresh={!highlightBefore || new Date(n.at) > new Date(highlightBefore)} now={now} />

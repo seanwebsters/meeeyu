@@ -11,7 +11,7 @@ import { useNow } from "@/lib/store/clock";
 import { cx } from "@/lib/utils";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
-import { CATEGORY_ICONS, IconArrowRight, IconBack, IconCheck, VMark } from "../icons";
+import { CATEGORY_ICONS, IconArrowRight, IconBack, VMark } from "../icons";
 import { toast } from "../ui/Toast";
 
 type Step = "intro" | "auth" | "interests" | "name" | "joining";
@@ -174,7 +174,7 @@ function Intro({ onNext }: { onNext: () => void }) {
               <span>
                 <b className="font-semibold">Maya</b> joined the group
               </span>
-              <span className="live-dot h-1.5 w-1.5 rounded-full bg-accent" />
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-live" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -220,7 +220,7 @@ function Auth({ onBack, onDone }: { onBack: () => void; onDone: (email: string |
     <motion.div {...screen} className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))]">
       <TopBar step="auth" onBack={onBack} />
       <div className="mt-9">
-        <h1 className="display text-[30px]">You&apos;ve been added to the group.</h1>
+        <h1 className="display text-[40px]">you&apos;ve been added to the group.</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-stone">
           Founders, musicians, athletes, actors and experts. They post when they have something worth thirty seconds.
         </p>
@@ -285,10 +285,10 @@ function Interests({ initial, onBack, onDone }: { initial: Category[]; onBack: (
   return (
     <motion.div {...screen} className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))]">
       <TopBar step="interests" onBack={onBack} onSkip={() => onDone([])} />
-      <h1 className="display mt-8 text-[30px]">What are you interested in?</h1>
-      <p className="mt-1.5 text-[14px] text-stone">Choose a few to personalise your feed.</p>
+      <h1 className="display mt-10 text-[40px]">what are you into?</h1>
+      <p className="mt-2 text-[15px] text-stone">pick a few. we&apos;ll tune your feed.</p>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-8 flex flex-wrap gap-2.5">
         {CATEGORIES.map((c, i) => {
           const on = picked.includes(c);
           const Icon = CATEGORY_ICONS[c];
@@ -298,28 +298,16 @@ function Interests({ initial, onBack, onDone }: { initial: Category[]; onBack: (
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 + i * 0.03 }}
-              whileTap={{ scale: 0.96 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => toggle(c)}
               aria-pressed={on}
               className={cx(
-                "relative flex h-[96px] flex-col items-center justify-center gap-2 rounded-[18px] border text-[13px] font-medium transition-colors",
-                on ? "border-accent/50 bg-accent-soft text-accent" : "border-line bg-paper text-ink-2 hover:border-ink/20",
+                "flex h-12 items-center gap-2 rounded-full px-5 text-[16px] font-medium tracking-[-0.01em] transition-colors",
+                on ? "bg-ink text-cream" : "bg-mist text-ink hover:bg-line",
               )}
             >
-              <Icon size={26} />
-              {c}
-              <AnimatePresence>
-                {on && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-cream"
-                  >
-                    <IconCheck size={12} strokeWidth={2.6} />
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              <Icon size={18} />
+              {c.toLowerCase()}
             </motion.button>
           );
         })}
@@ -348,8 +336,8 @@ function Name({ onBack, onDone }: { onBack: () => void; onDone: (name: string) =
       className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))]"
     >
       <TopBar step="name" onBack={onBack} />
-      <h1 className="display mt-8 text-[30px]">What should the group call you?</h1>
-      <p className="mt-1.5 text-[14px] text-stone">Your first name is perfect.</p>
+      <h1 className="display mt-10 text-[40px]">what should we call you?</h1>
+      <p className="mt-2 text-[15px] text-stone">first name is perfect.</p>
       <input
         autoFocus
         value={name}
@@ -357,7 +345,7 @@ function Name({ onBack, onDone }: { onBack: () => void; onDone: (name: string) =
         placeholder="Your first name"
         autoComplete="given-name"
         maxLength={40}
-        className="mt-8 h-14 rounded-[18px] border border-line bg-paper px-5 text-[18px] font-medium outline-none placeholder:text-stone-2 focus:border-accent/40"
+        className="mt-8 h-14 border-b border-line bg-transparent text-[24px] font-semibold tracking-[-0.02em] outline-none placeholder:text-stone-2 focus:border-ink"
       />
       <div className="mt-auto pt-8">
         <Button size="lg" className="w-full" disabled={!name.trim()}>
@@ -419,7 +407,7 @@ function Joining() {
           </motion.p>
         ) : (
           <motion.div key="added" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-10">
-            <p className="display text-[30px]">You joined the group.</p>
+            <p className="display text-[36px]">you joined the group.</p>
             <p className="mt-2 text-[14px] text-stone">
               You and {(GROUP_SIZE + 1).toLocaleString("en-GB")} others · {LISTENING_BASE.toLocaleString("en-GB")} listening now.
               <br />

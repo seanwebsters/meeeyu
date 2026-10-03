@@ -64,7 +64,7 @@ export function DiscoverScreen() {
 
   return (
     <div className="pb-40">
-      <header className="sticky top-0 z-20 bg-cream/90 px-5 pb-2 pt-[max(14px,env(safe-area-inset-top))] backdrop-blur-xl">
+      <header className="sticky top-0 z-20 bg-cream/[0.97] px-5 pb-2 pt-[max(14px,env(safe-area-inset-top))] backdrop-blur-xl">
         <div className="flex h-10 items-center">
           <span className="wordmark flex-1 text-[22px]">VoysNote</span>
           <button
@@ -100,8 +100,8 @@ export function DiscoverScreen() {
 
       {!results && (
         <div className="px-5 pt-3">
-          <h1 className="display text-[32px]">Discover</h1>
-          <p className="mt-1 text-[14px] text-stone">New voices. Fresh perspectives. A bigger world.</p>
+          <h1 className="display text-[40px]">discover</h1>
+          <p className="mt-1 text-[14px] text-stone">new voices. fresh perspectives. a bigger world.</p>
         </div>
       )}
 
@@ -135,7 +135,7 @@ export function DiscoverScreen() {
         <>
           <Section
             title="Recently joined"
-            action={all === "recent" ? "Less" : "See all"}
+            action={all === "recent" ? "less" : "see all"}
             onAction={() => setAll(all === "recent" ? null : "recent")}
             className="px-5 pt-6"
           >
@@ -162,7 +162,7 @@ export function DiscoverScreen() {
 
           <Section
             title="Trending voices"
-            action={all === "trending" ? "Less" : "See all"}
+            action={all === "trending" ? "less" : "see all"}
             onAction={() => setAll(all === "trending" ? null : "trending")}
             className="px-5 pt-8"
           >
@@ -187,16 +187,16 @@ export function DiscoverScreen() {
           </Section>
 
           <Section title="Categories" className="px-5 pt-8">
-            <div className="grid grid-cols-4 gap-2">
+            <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((c) => {
                 const Icon = CATEGORY_ICONS[c];
                 return (
                   <button
                     key={c}
                     onClick={() => setCat(c)}
-                    className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[16px] border border-line bg-paper text-[11px] font-medium text-ink-2 transition-colors hover:border-accent/40 hover:text-accent"
+                    className="flex h-10 items-center gap-2 rounded-full bg-mist px-4 text-[14px] font-medium lowercase text-ink transition-colors hover:bg-line"
                   >
-                    <Icon size={22} />
+                    <Icon size={16} />
                     {c}
                   </button>
                 );
@@ -285,7 +285,7 @@ function Section({
   return (
     <section className={className}>
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-[16px] font-semibold tracking-[-0.01em]">{title}</h2>
+        <h2 className="text-[13px] font-medium lowercase text-stone">{title}</h2>
         {action && (
           <button onClick={onAction} className="text-[12px] font-medium text-stone hover:text-accent">
             {action}
