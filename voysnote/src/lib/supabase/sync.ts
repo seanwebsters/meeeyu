@@ -207,6 +207,12 @@ export const remote = {
     if (!sb || !id) return;
     quietly(on ? sb.from("saved_notes").upsert({ user_id: id, note_id: noteId }) : sb.from("saved_notes").delete().match({ user_id: id, note_id: noteId }));
   },
+  async reply(noteId: string, text: string) {
+    const sb = getSupabase();
+    const id = await userId();
+    if (!sb || !id) return;
+    quietly(sb.from("replies").insert({ user_id: id, note_id: noteId, text }));
+  },
   async play(noteId: string) {
     const sb = getSupabase();
     const id = await userId();

@@ -3,25 +3,37 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { buildFeed, listeningNow } from "@/lib/feed";
+import { buildFeed } from "@/lib/feed";
 import { joinedCreators } from "@/lib/catalog";
 import { buildNotifications } from "@/lib/notifications";
 import { noteToPlayable } from "@/lib/audio/playable";
+import { GROUP_SIZE } from "@/lib/demo/seed";
 import { useApp, useCatalog, useEntitlements } from "@/lib/store/app";
 import { useNow } from "@/lib/store/clock";
-import { cx, firstName } from "@/lib/utils";
+import type { Creator } from "@/lib/types";
+import { cx, firstName, formatCount } from "@/lib/utils";
 import { Avatar } from "../ui/Avatar";
-import { IconArrowDown, IconBell, VMark } from "../icons";
+import { CreatorRow } from "../creator/CreatorRow";
+import { IconArrowDown, IconBell, IconDiscover } from "../icons";
 import { VoiceNoteCard } from "../note/VoiceNoteCard";
 import { ArchiveBanner, DayDivider, JoinedMoment, ListeningLine, PendingIndicator, YouJoined } from "./SystemItems";
+
+type Tab = "group" | "following" | "foryou";
+const TABS: [Tab, string][] = [
+  ["group", "Group"],
+  ["following", "Following"],
+  ["foryou", "For You"],
+];
 
 export function GroupScreen() {
   const { catalog, idx } = useCatalog();
   const entitlements = useEntitlements();
   const userJoinedAt = useApp((s) => s.user?.joinedAt ?? null);
+  const interests = useApp((s) => s.user?.interests);
   const follows = useApp((s) => s.follows);
   const seenAt = useApp((s) => s.notificationsSeenAt);
   const now = useNow();
+  const [tab, setTab] = useState<Tab>("group");
 
   // Rebuild only when something actually becomes live, not every second.
   const liveKey = useMemo(() => {
@@ -29,10 +41,16 @@ export function GroupScreen() {
     return times.filter((t) => t && new Date(t).getTime() <= now).length + ":" + Math.floor(now / 5000);
   }, [catalog, now]);
 
+  const only = useMemo<((c: Creator) => boolean) | undefined>(() => {
+    if (tab === "following") return (c) => follows.includes(c.id);
+    if (tab === "foryou") return (c) => !interests?.length || interests.includes(c.category);
+    return undefined;
+  }, [tab, follows, interests]);
+
   const { items, pending, playable } = useMemo(
-    () => buildFeed(catalog, { now, entitlements, userJoinedAt }),
+    () => buildFeed(catalog, { now, entitlements, userJoinedAt, only }),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- liveKey stands in for `now`
-    [catalog, entitlements, userJoinedAt, liveKey],
+    [catalog, entitlements, userJoinedAt, liveKey, only],
   );
 
   const queue = useMemo(() => playable.map((n) => noteToPlayable(n, idx.creators.get(n.creatorId)!)), [playable, idx]);
@@ -49,14 +67,15 @@ export function GroupScreen() {
   const [newArrival, setNewArrival] = useState<string | null>(null);
   const first = useRef(true);
 
+  const toBottom = (smooth = false) => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+
   useLayoutEffect(() => {
     if (!first.current) return;
     first.current = false;
-    const toBottom = () => window.scrollTo({ top: document.documentElement.scrollHeight });
     toBottom();
     // Navigation resets scroll after mount; settle on the latest message.
-    const raf = requestAnimationFrame(toBottom);
-    const t = setTimeout(toBottom, 120);
+    const raf = requestAnimationFrame(() => toBottom());
+    const t = setTimeout(() => toBottom(), 120);
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(t);
@@ -65,9 +84,9 @@ export function GroupScreen() {
 
   useEffect(() => {
     if (first.current) return;
-    const nearBottom = window.innerHeight + window.scrollY > document.documentElement.scrollHeight - 420;
+    const nearBottom = window.innerHeight + window.scrollY > document.documentElement.scrollHeight - 480;
     if (nearBottom) {
-      requestAnimationFrame(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }));
+      requestAnimationFrame(() => toBottom(true));
     } else {
       const last = items.at(-1);
       // Responds to the window's scroll position, which React doesn't own.
@@ -88,43 +107,61 @@ export function GroupScreen() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [newArrival]);
 
+  const switchTab = (t: Tab) => {
+    setTab(t);
+    requestAnimationFrame(() => toBottom());
+  };
+
+  const noteCount = items.filter((i) => i.kind === "note").length;
+
   return (
     <div className="pb-44">
-      <header className="sticky top-0 z-30 border-b border-line/60 bg-cream/85 backdrop-blur-xl">
-        <div className="flex items-center gap-3 px-4 pb-2.5 pt-[max(12px,env(safe-area-inset-top))]">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-cream">
-            <VMark size={22} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-baseline gap-2">
-              <h1 className="wordmark text-[21px] leading-none">voysnote</h1>
-              <span className="text-[12px] font-medium text-stone">The Group</span>
-            </div>
-            <div className="mt-1 flex items-center gap-1.5 text-[12px] text-stone">
-              <span className="flex -space-x-1.5">
-                {members.slice(-3).map((c) => (
-                  <Avatar key={c.id} src={c.avatar} name={c.name} tone={c.tone} size={16} className="ring-[1.5px] ring-cream rounded-full" />
-                ))}
-              </span>
-              <span className="live-dot ml-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ember" />
-              <span className="truncate tabular-nums">
-                {members.length} voices · {listeningNow(now).toLocaleString("en-GB")} listening
-              </span>
-            </div>
-          </div>
+      <header className="sticky top-0 z-30 bg-cream/90 backdrop-blur-xl">
+        <div className="flex items-center gap-2 px-5 pb-1 pt-[max(14px,env(safe-area-inset-top))]">
+          <h1 className="wordmark flex-1 text-[22px]">VoysNote</h1>
+          <Link href="/discover?search=1" aria-label="Search" className="rounded-full p-2 text-ink hover:bg-mist">
+            <IconDiscover size={22} />
+          </Link>
           <Link
             href="/notifications"
             aria-label={`Notifications${unread ? `, ${unread} new` : ""}`}
-            className="relative -mr-1 rounded-full p-2 text-ink hover:bg-mist"
+            className="relative -mr-2 rounded-full p-2 text-ink hover:bg-mist"
           >
-            <IconBell size={23} />
-            {unread > 0 && <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-cream bg-ember" />}
+            <IconBell size={22} />
+            {unread > 0 && <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-cream bg-heart" />}
           </Link>
         </div>
+
+        <div className="flex items-center gap-2 px-5 pb-3 pt-1.5">
+          <div className="flex -space-x-2">
+            {members
+              .slice(-6)
+              .reverse()
+              .map((c) => (
+                <Link key={c.id} href={`/c/${c.username}`}>
+                  <Avatar src={c.avatar} name={c.name} tone={c.tone} size={30} className="rounded-full ring-2 ring-cream" />
+                </Link>
+              ))}
+          </div>
+          <span className="text-[12px] text-stone">+{formatCount(GROUP_SIZE)} in the group</span>
+        </div>
+
+        <nav className="flex gap-6 border-b border-line px-5">
+          {TABS.map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => switchTab(k)}
+              className={cx("relative pb-2.5 text-[14px] font-medium transition-colors", tab === k ? "text-ink" : "text-stone")}
+            >
+              {label}
+              {tab === k && <motion.span layoutId="group-tab" className="absolute inset-x-0 -bottom-px h-[2px] rounded-full bg-accent" />}
+            </button>
+          ))}
+        </nav>
       </header>
 
-      <div className="space-y-4 px-3.5 pt-5">
-        <GroupIntro />
+      <div className="space-y-3 px-4 pt-4">
+        {tab !== "group" && noteCount === 0 && <EmptyTab tab={tab} />}
         {items.map((item) => {
           switch (item.kind) {
             case "day":
@@ -138,22 +175,14 @@ export function GroupScreen() {
             case "archive":
               return <ArchiveBanner key={item.id} count={item.count} />;
             case "note":
-              return (
-                <VoiceNoteCard
-                  key={item.id}
-                  note={item.note}
-                  creator={item.creator}
-                  access={item.access}
-                  sponsor={item.sponsor}
-                  showHeader={item.showHeader}
-                  queue={queue}
-                />
-              );
+              return <VoiceNoteCard key={item.id} note={item.note} creator={item.creator} access={item.access} sponsor={item.sponsor} queue={queue} />;
           }
         })}
-        <AnimatePresence mode="wait">
-          <PendingIndicator key={pending?.kind ?? "none"} pending={pending} />
-        </AnimatePresence>
+        {tab === "group" && (
+          <AnimatePresence mode="wait">
+            <PendingIndicator key={pending?.kind ?? "none"} pending={pending} />
+          </AnimatePresence>
+        )}
         <div ref={bottomRef} className="h-1" />
       </div>
 
@@ -164,12 +193,10 @@ export function GroupScreen() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
             onClick={() => {
-              bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+              toBottom(true);
               setNewArrival(null);
             }}
-            className={cx(
-              "fixed bottom-[calc(140px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-[13px] font-semibold text-cream shadow-lg",
-            )}
+            className="fixed bottom-[calc(140px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-cream shadow-lg"
           >
             <IconArrowDown size={15} /> {newArrival}
           </motion.button>
@@ -179,13 +206,27 @@ export function GroupScreen() {
   );
 }
 
-function GroupIntro() {
+function EmptyTab({ tab }: { tab: Tab }) {
+  const { catalog } = useCatalog();
+  const now = useNow();
+  const follows = useApp((s) => s.follows);
+  const suggestions = joinedCreators(catalog, now)
+    .filter((c) => !follows.includes(c.id))
+    .slice(-4)
+    .reverse();
   return (
-    <div className="mx-auto max-w-[300px] pb-2 pt-4 text-center">
-      <p className="display text-[30px]">The Group</p>
-      <p className="mt-2 text-[13px] leading-relaxed text-stone">
-        One conversation. The world&apos;s most interesting people drop in with thirty seconds when they have something to say.
+    <div className="card px-4 py-5">
+      <p className="text-[16px] font-semibold">{tab === "following" ? "Follow a few voices" : "Nothing here yet"}</p>
+      <p className="mt-1 text-[13px] text-stone">
+        {tab === "following" ? "Their notes will gather here, in order, like a smaller group chat." : "Add more interests in your profile to tune this tab."}
       </p>
+      {tab === "following" && (
+        <div className="mt-3 divide-y divide-line/70">
+          {suggestions.map((c) => (
+            <CreatorRow key={c.id} creator={c} meta={c.role} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

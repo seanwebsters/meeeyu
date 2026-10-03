@@ -85,6 +85,16 @@ export interface SavedNote {
   createdAt: string;
 }
 
+/** A short text reply under a note. */
+export interface Reply {
+  id: string;
+  noteId: string;
+  userName: string;
+  text: string;
+  at: string;
+  mine?: boolean;
+}
+
 export interface Collection {
   id: string;
   userId: string;

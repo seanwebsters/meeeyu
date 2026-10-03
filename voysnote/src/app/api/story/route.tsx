@@ -5,8 +5,9 @@ import { makeWaveform } from "@/lib/utils";
 // Stories); format=og → 1200×630 (link previews). It's a tease: name, hook
 // and duration only, never the audio or what was said.
 
-const CREAM = "#f3eee5";
-const INK = "#151310";
+const CREAM = "#f4f0e8";
+const INK = "#1d1c19";
+const MOSS = "#3c4a3a";
 const STONE = "#8a8378";
 
 async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | null> {
@@ -47,13 +48,9 @@ export async function GET(req: Request) {
   const s = og ? 0.55 : 1; // scale factor for the og layout
 
   const allText = `${headline}${name}voysnoteTHE GROUPListen on VoysNote0123456789:30 seconds a day from the world's most interesting people`;
-  const [serif, sans, avatar] = await Promise.all([
-    googleFont("Instrument+Serif", 400, allText),
-    googleFont("Inter", 700, allText),
-    avatarData(q.get("avatar")),
-  ]);
+  const [serif, sans, avatar] = await Promise.all([googleFont("Inter", 600, allText), googleFont("Inter", 700, allText), avatarData(q.get("avatar"))]);
   const fonts = [
-    ...(serif ? [{ name: "Serif", data: serif, weight: 400 as const, style: "normal" as const }] : []),
+    ...(serif ? [{ name: "Inter", data: serif, weight: 600 as const, style: "normal" as const }] : []),
     ...(sans ? [{ name: "Inter", data: sans, weight: 700 as const, style: "normal" as const }] : []),
   ];
 
@@ -84,10 +81,10 @@ export async function GET(req: Request) {
     >
       <div style={{ display: "flex", alignItems: "center", gap: 14 * s }}>
         <svg width={56 * s} height={56 * s} viewBox="0 0 32 32">
-          <path d="M6 9.5 16 24 26 9.5" fill="none" stroke={INK} strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M12.2 9.5v4.2M16 7v6.5M19.8 9.5v4.2" fill="none" stroke={INK} strokeWidth={2.2} strokeLinecap="round" />
+          <path d="M6 9.5 16 24 26 9.5" fill="none" stroke={MOSS} strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12.2 9.5v4.2M16 7v6.5M19.8 9.5v4.2" fill="none" stroke={MOSS} strokeWidth={2.2} strokeLinecap="round" />
         </svg>
-        <span style={{ fontSize: 56 * s, fontWeight: 700, letterSpacing: -3 * s }}>voysnote</span>
+        <span style={{ fontSize: 56 * s, fontWeight: 700, letterSpacing: -3 * s }}>VoysNote</span>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
@@ -100,13 +97,13 @@ export async function GET(req: Request) {
               width: avatarSize,
               height: avatarSize,
               borderRadius: 9999,
-              background: "#b8a48e",
+              background: MOSS,
               color: CREAM,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: 130 * s,
-              fontFamily: "Serif",
+              fontWeight: 700,
             }}
           >
             {initials}
@@ -114,7 +111,15 @@ export async function GET(req: Request) {
         )}
         <span style={{ marginTop: 70 * s, fontSize: 28 * s, letterSpacing: 8 * s, color: STONE, fontWeight: 700 }}>THE GROUP</span>
         <span
-          style={{ marginTop: 22 * s, fontSize: (og ? 150 : 132) * s, lineHeight: 0.9, fontFamily: "Serif", maxWidth: og ? 1100 : 900, textAlign: "center" }}
+          style={{
+            marginTop: 22 * s,
+            fontSize: (og ? 110 : 96) * s,
+            lineHeight: 1,
+            letterSpacing: -3 * s,
+            fontWeight: 700,
+            maxWidth: og ? 1100 : 900,
+            textAlign: "center",
+          }}
         >
           {headline}
         </span>
@@ -124,7 +129,7 @@ export async function GET(req: Request) {
             display: "flex",
             alignItems: "center",
             gap: 26 * s,
-            background: INK,
+            background: MOSS,
             color: CREAM,
             borderRadius: 9999,
             padding: `${30 * s}px ${44 * s}px`,
@@ -145,7 +150,7 @@ export async function GET(req: Request) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <span style={{ fontSize: 46 * s, fontWeight: 700 }}>Listen on VoysNote</span>
+        <span style={{ fontSize: 46 * s, fontWeight: 700, color: MOSS }}>Listen on VoysNote</span>
         {!og && <span style={{ marginTop: 14, fontSize: 28, color: STONE }}>30 seconds a day from the world&apos;s most interesting people</span>}
       </div>
     </div>,

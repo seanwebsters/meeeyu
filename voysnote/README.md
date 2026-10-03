@@ -40,8 +40,8 @@ takes its place.
 
 | Screen | Route | Notes |
 | --- | --- | --- |
-| Onboarding | `/welcome` | Living chat preview, Apple / Google / email, interests, "You joined the group." |
-| The Group | `/` | The home screen. Chronological chat with day dividers, joins, notes, "people listening" lines, typing / recording indicators and a "Who's next?" teaser. Opens at the latest message. |
+| Onboarding | `/welcome` | Photo-led welcome, Apple / Google / email, interest tiles, name, "You joined the group." |
+| The Group | `/` | The home screen. Group / Following / For You tabs over one chronological conversation: join cards, note cards (heart, replies, save, share), "people listening" lines, "Someone new is joining…" with live listener presence, "is recording…", and a "Who's next?" teaser. Opens at the latest message. |
 | Discover | `/discover` | Search, categories, recently joined, trending voices, featured series, recommended for you |
 | Creator profile | `/c/[username]` | Editorial portrait, Founding Voice, follow, series, all their notes |
 | Saved | `/saved` | Saved notes, collections (VoysNote+), recently played |
@@ -77,6 +77,23 @@ mirrors the same rules on the server.
   collections, and no sponsored drops.
 - **Series:** Day 1 is always free. After that, one episode unlocks per day
   from purchase, or all at once for `unlockCadence: "all"`.
+
+### Design
+
+Cream background, white cards and near-black type. One restrained accent,
+deep moss green (`--accent`), is used for primary buttons, play buttons,
+progress and the active tab. A muted gold marks Founding Voices and
+VoysNote+. Inter is used throughout. The tokens live in
+`src/app/globals.css`.
+
+Navigation is Home / Discover / **+** / Saved / Profile. Listeners don't
+post, so the **+** button grows the group instead: invite a friend,
+suggest who should join next, or start a collection.
+
+Each card shows a heart (tap to like, press and hold for 🔥 ❤️ 🙌 🤯 💭)
+and a reply count. Replies open in a sheet. The demo seeds a few replies
+per note and stores your own locally; there's also a `replies` table in
+the migration.
 
 ## Seed content
 

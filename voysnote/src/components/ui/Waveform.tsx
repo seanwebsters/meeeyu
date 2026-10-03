@@ -25,8 +25,8 @@ export function Waveform({ data, progress, playing, onSeek, height = 30, classNa
     onSeek(Math.max(0, Math.min(1, (clientX - r.left) / r.width)));
   };
 
-  const played = tone === "ink" ? "bg-ink" : "bg-cream";
-  const rest = tone === "ink" ? "bg-stone-2/70" : "bg-cream/35";
+  const played = tone === "ink" ? "bg-accent" : "bg-cream";
+  const rest = tone === "ink" ? "bg-stone-2/80" : "bg-cream/35";
 
   return (
     <div

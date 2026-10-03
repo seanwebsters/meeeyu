@@ -2,15 +2,22 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { REACTIONS, type ReactionKind, type VoiceNote } from "@/lib/types";
+import { REACTIONS, type VoiceNote } from "@/lib/types";
 import { actions, useApp } from "@/lib/store/app";
 import { cx, formatCount } from "@/lib/utils";
+import { IconHeart, IconHeartFill } from "../icons";
 
-/** iMessage-style tapback: tap to open a small tray, pick one, tap again to undo. */
+/**
+ * Tap to heart. Press and hold for the full tapback tray (🔥 ❤️ 🙌 🤯 💭).
+ * The count is every reaction on the note.
+ */
 export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?: boolean }) {
   const mine = useApp((s) => s.reactions[note.id]);
   const [open, setOpen] = useState(false);
+  const [burst, setBurst] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
+  const hold = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const held = useRef(false);
 
   useEffect(() => {
     if (!open) return;
@@ -21,37 +28,38 @@ export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?:
     return () => window.removeEventListener("pointerdown", close);
   }, [open]);
 
-  const counts = { ...note.reactions };
-  if (mine) counts[mine] = (counts[mine] ?? 0) + 1;
-  const total = Object.values(counts).reduce((a, b) => a + (b ?? 0), 0);
-  const top = (Object.entries(counts) as [ReactionKind, number][])
-    .filter(([, v]) => v > 0)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([k]) => k);
+  const total = Object.values(note.reactions).reduce((a, b) => a + (b ?? 0), 0) + (mine ? 1 : 0);
 
   return (
     <div ref={ref} className="relative">
       <button
         disabled={disabled}
-        onClick={() => setOpen((o) => !o)}
-        aria-label="React"
-        aria-expanded={open}
+        onPointerDown={() => {
+          held.current = false;
+          hold.current = setTimeout(() => {
+            held.current = true;
+            setOpen(true);
+          }, 450);
+        }}
+        onPointerUp={() => clearTimeout(hold.current)}
+        onPointerLeave={() => clearTimeout(hold.current)}
+        onContextMenu={(e) => e.preventDefault()}
+        onClick={() => {
+          if (held.current) return;
+          actions.react(note.id, mine ? mine : "❤️");
+          if (!mine) setBurst((b) => b + 1);
+        }}
+        aria-label={mine ? "Remove reaction" : "Like"}
+        aria-pressed={!!mine}
         className={cx(
-          "flex h-8 items-center gap-1 rounded-full px-2.5 text-[12px] font-medium tabular-nums transition-colors disabled:opacity-40",
-          mine ? "bg-ink text-cream" : "text-stone hover:bg-mist",
+          "flex h-9 select-none items-center gap-1.5 rounded-full pl-1.5 pr-2.5 text-[13px] font-medium tabular-nums transition-colors disabled:opacity-40",
+          mine ? "text-heart" : "text-ink-2 hover:bg-mist",
         )}
       >
-        {top.length ? (
-          <span className="flex -space-x-0.5 text-[13px] leading-none">
-            {top.map((k) => (
-              <span key={k}>{k}</span>
-            ))}
-          </span>
-        ) : (
-          <span className="text-[14px] grayscale">🔥</span>
-        )}
-        {total > 0 && <span>{formatCount(total)}</span>}
+        <motion.span key={burst} initial={burst ? { scale: 0.6 } : false} animate={{ scale: 1 }} transition={{ type: "spring", damping: 9, stiffness: 420 }}>
+          {mine && mine !== "❤️" ? <span className="text-[16px] leading-none">{mine}</span> : mine ? <IconHeartFill size={20} /> : <IconHeart size={20} />}
+        </motion.span>
+        {total > 0 && <span className={mine ? "text-heart" : "text-ink-2"}>{formatCount(total)}</span>}
       </button>
 
       <AnimatePresence>
@@ -61,7 +69,7 @@ export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?:
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.95 }}
             transition={{ type: "spring", damping: 22, stiffness: 420 }}
-            className="absolute bottom-[calc(100%+6px)] left-0 z-20 flex gap-0.5 rounded-full border border-line bg-paper p-1 shadow-[0_12px_30px_-10px_rgba(21,19,16,0.3)]"
+            className="absolute bottom-[calc(100%+6px)] left-0 z-20 flex gap-0.5 rounded-full border border-line bg-paper p-1 shadow-[0_12px_30px_-10px_rgba(29,28,25,0.3)]"
           >
             {REACTIONS.map((k, i) => (
               <motion.button

@@ -4,7 +4,21 @@ import { useMemo, useSyncExternalStore } from "react";
 import { createStore } from "./createStore";
 import { buildSeedCatalog, EMPTY_ADMIN, indexCatalog, mergeCatalog, type AdminContent } from "../catalog";
 import type { Entitlements } from "../access";
-import type { Catalog, Category, Collection, Creator, FeedEvent, ReactionKind, SavedNote, Series, SeriesEpisode, Sponsor, User, VoiceNote } from "../types";
+import type {
+  Catalog,
+  Category,
+  Collection,
+  Creator,
+  FeedEvent,
+  ReactionKind,
+  Reply,
+  SavedNote,
+  Series,
+  SeriesEpisode,
+  Sponsor,
+  User,
+  VoiceNote,
+} from "../types";
 import { uid } from "../utils";
 import { remote, type loadRemoteUserState } from "../supabase/sync";
 
@@ -16,6 +30,7 @@ export interface Persisted {
   follows: string[];
   reactions: Record<string, ReactionKind>;
   saved: SavedNote[];
+  replies: Reply[];
   collections: Collection[];
   played: { noteId: string; at: string }[];
   purchases: string[];
@@ -41,6 +56,7 @@ const DEFAULTS: Persisted = {
   follows: [],
   reactions: {},
   saved: [],
+  replies: [],
   collections: [],
   played: [],
   purchases: [],
@@ -91,6 +107,7 @@ appStore.subscribe(() => {
       follows: s.follows,
       reactions: s.reactions,
       saved: s.saved,
+      replies: s.replies.slice(-200),
       collections: s.collections,
       played: s.played.slice(0, 50),
       purchases: s.purchases,
@@ -204,6 +221,12 @@ export const actions = {
       saved: saved ? s.saved.filter((x) => x.noteId !== noteId) : [{ userId: s.user?.id ?? "anon", noteId, collectionId: null, createdAt: now() }, ...s.saved],
     }));
     remote.save(noteId, !saved);
+  },
+
+  addReply(noteId: string, text: string) {
+    const r: Reply = { id: uid("r"), noteId, userName: appStore.get().user?.name ?? "You", text: text.trim(), at: now(), mine: true };
+    set((s) => ({ ...s, replies: [...s.replies, r] }));
+    remote.reply(noteId, r.text);
   },
 
   createCollection(name: string) {

@@ -14,7 +14,7 @@ export function Toggle({ label, hint, on, onChange }: { label: string; hint?: st
         role="switch"
         aria-checked={on}
         onClick={() => onChange(!on)}
-        className={cx("relative h-7 w-12 shrink-0 rounded-full transition-colors", on ? "bg-ink" : "bg-stone-2/60")}
+        className={cx("relative h-7 w-12 shrink-0 rounded-full transition-colors", on ? "bg-accent" : "bg-stone-2/60")}
       >
         <span className={cx("absolute left-0 top-1 h-5 w-5 rounded-full bg-cream shadow transition-transform", on ? "translate-x-6" : "translate-x-1")} />
       </button>

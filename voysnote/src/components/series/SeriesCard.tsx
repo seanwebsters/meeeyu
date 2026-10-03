@@ -38,7 +38,7 @@ export function SeriesCard({
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cream/70">
           {series.billing === "subscription" ? "Creator series · monthly" : "Creator series"}
         </p>
-        <h3 className={cx("display mt-1.5", size === "lg" ? "text-[42px]" : "text-[26px]")}>{series.title}</h3>
+        <h3 className={cx("display mt-1.5", size === "lg" ? "text-[30px]" : "text-[20px]")}>{series.title}</h3>
         <p className="mt-1.5 text-[13px] text-cream/80">
           {creator.name} · {series.episodeCount} notes
         </p>

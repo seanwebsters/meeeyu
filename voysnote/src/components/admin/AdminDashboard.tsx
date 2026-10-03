@@ -36,7 +36,7 @@ export function AdminDashboard() {
           <span className="rounded-full bg-ink px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-cream">Admin</span>
         </div>
         <span className="flex items-center gap-2 text-[12px] text-stone">
-          <span className={cx("h-2 w-2 rounded-full", supabaseConfigured ? "bg-emerald-600" : "bg-ember")} />
+          <span className={cx("h-2 w-2 rounded-full", supabaseConfigured ? "bg-emerald-600" : "bg-accent")} />
           {supabaseConfigured ? "Connected to Supabase" : "Demo mode · changes are saved in this browser"}
         </span>
       </header>
@@ -155,7 +155,7 @@ function Upcoming({ limit }: { limit?: number }) {
             {own && (
               <button
                 onClick={() => (r.kind === "event" ? actions.admin.deleteEvent(r.id) : actions.admin.deleteNote(r.id))}
-                className="text-[12px] font-medium text-ember hover:underline"
+                className="text-[12px] font-medium text-accent hover:underline"
               >
                 Cancel
               </button>
@@ -187,7 +187,7 @@ function CreatorsTab() {
                   <div className="min-w-0 flex-1">
                     <p className="flex items-center gap-2 text-[14px] font-semibold">
                       {c.name}
-                      {!joined && <Pill tone="ember">Scheduled</Pill>}
+                      {!joined && <Pill tone="accent">Scheduled</Pill>}
                     </p>
                     <p className="truncate text-[12px] text-stone">
                       @{c.username} · {c.category} · {joined ? `joined ${relativeShort(c.joinedAt, now)} ago` : `joins ${relativeFuture(c.joinedAt, now)}`}
@@ -359,7 +359,7 @@ function NotesTab() {
                   </p>
                   <p className="flex flex-wrap items-center gap-1.5 text-[12px] text-stone">
                     {formatDuration(n.duration)} · {live ? `${relativeShort(n.publishedAt, now)} ago` : relativeFuture(n.publishedAt, now)}
-                    {!live && <Pill tone="ember">Scheduled</Pill>}
+                    {!live && <Pill tone="accent">Scheduled</Pill>}
                     {n.premium && <Pill tone="ink">Plus</Pill>}
                     {n.sponsorId && <Pill>Sponsored</Pill>}
                     {n.audioUrl && <Pill>Audio</Pill>}
@@ -371,7 +371,7 @@ function NotesTab() {
                   </button>
                 )}
                 {own && (
-                  <button onClick={() => actions.admin.deleteNote(n.id)} className="text-[12px] font-medium text-ember hover:underline">
+                  <button onClick={() => actions.admin.deleteNote(n.id)} className="text-[12px] font-medium text-accent hover:underline">
                     Delete
                   </button>
                 )}
@@ -702,7 +702,7 @@ function SeriesTab() {
               <li key={s.id} className="flex items-center gap-3 py-3">
                 {c && <Avatar src={c.avatar} name={c.name} tone={c.tone} size={40} />}
                 <div className="min-w-0 flex-1">
-                  <Link href={`/series/${s.id}`} className="font-serif text-[18px] hover:underline">
+                  <Link href={`/series/${s.id}`} className="font-medium text-[18px] hover:underline">
                     {s.title}
                   </Link>
                   <p className="text-[12px] text-stone">

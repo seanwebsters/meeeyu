@@ -89,7 +89,7 @@ export function SeriesScreen({ id }: { id: string }) {
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-2">
           Creator series · {series.episodeCount} notes{series.unlockCadence === "daily" ? " · one a day" : ""}
         </p>
-        <h1 className="display mt-2 text-[56px]">{series.title}</h1>
+        <h1 className="display mt-2 text-[36px]">{series.title}</h1>
         <Link href={`/c/${creator.username}`} className="mt-4 flex items-center gap-2.5">
           <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={32} />
           <span className="text-[14px] font-semibold">{creator.name}</span>
@@ -130,7 +130,7 @@ export function SeriesScreen({ id }: { id: string }) {
                   <span
                     key={ep.id}
                     title={`Day ${ep.day}`}
-                    className={cx("aspect-square rounded-full", isDone ? "bg-ink" : open ? "bg-ember/80" : "bg-mist")}
+                    className={cx("aspect-square rounded-full", isDone ? "bg-accent" : open ? "bg-accent/35" : "bg-mist")}
                   />
                 );
               })}
@@ -141,7 +141,7 @@ export function SeriesScreen({ id }: { id: string }) {
       )}
 
       <section className="px-5 pt-8">
-        <h2 className="mb-1 text-[12px] font-semibold uppercase tracking-[0.16em] text-stone">The notes</h2>
+        <h2 className="mb-1 text-[16px] font-semibold">The notes</h2>
         <ul className="divide-y divide-line/60">
           {episodes.map((ep) => (
             <EpisodeRow
@@ -202,9 +202,9 @@ function EpisodeRow({
   const playing = status === "playing";
   return (
     <li className="flex items-center gap-4 py-3.5">
-      <span className={cx("display w-8 text-[26px]", state === "open" ? "text-ink" : "text-stone-2")}>{ep.day}</span>
+      <span className={cx("w-8 text-[18px] font-semibold", state === "open" ? "text-ink" : "text-stone-2")}>{ep.day}</span>
       <div className="min-w-0 flex-1">
-        <p className={cx("truncate font-serif text-[18px] leading-tight", state !== "open" && "text-stone")}>{ep.title}</p>
+        <p className={cx("truncate font-medium text-[18px] leading-tight", state !== "open" && "text-stone")}>{ep.title}</p>
         <p className="mt-0.5 text-[12px] text-stone">
           {state === "upcoming" ? (daysAway === 1 ? "Unlocks tomorrow" : `Unlocks in ${daysAway} days`) : formatDuration(ep.duration)}
           {ep.day === 1 && state === "open" && " · Free preview"}
@@ -214,7 +214,10 @@ function EpisodeRow({
         <button
           onClick={onPlay}
           aria-label={playing ? "Pause" : "Play"}
-          className={cx("flex h-10 w-10 items-center justify-center rounded-full", done && !playing ? "border border-ink/15" : "bg-ink text-cream")}
+          className={cx(
+            "flex h-10 w-10 items-center justify-center rounded-full",
+            done && !playing ? "border border-accent/30 text-accent" : "bg-accent text-cream",
+          )}
         >
           {playing ? <IconPause size={15} /> : done ? <IconCheck size={16} /> : <IconPlay size={15} className="translate-x-[1px]" />}
         </button>

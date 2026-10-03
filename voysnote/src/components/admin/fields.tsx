@@ -39,13 +39,13 @@ export function Panel({ title, children, className, action }: { title: string; c
   );
 }
 
-export function Pill({ children, tone = "stone" }: { children: React.ReactNode; tone?: "stone" | "ink" | "ember" }) {
+export function Pill({ children, tone = "stone" }: { children: React.ReactNode; tone?: "stone" | "ink" | "accent" }) {
   return (
     <span
       className={cx(
         "inline-flex items-center rounded-full px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider",
         tone === "ink" && "bg-ink text-cream",
-        tone === "ember" && "bg-ember text-cream",
+        tone === "accent" && "bg-accent text-cream",
         tone === "stone" && "bg-mist text-ink-2",
       )}
     >

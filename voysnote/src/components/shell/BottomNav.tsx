@@ -1,44 +1,145 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "motion/react";
+import { useState } from "react";
 import { cx } from "@/lib/utils";
-import { IconBookmark, IconBookmarkFill, IconDiscover, IconGroup, IconGroupFill, IconUser } from "../icons";
+import { useApp } from "@/lib/store/app";
+import { IconBookmark, IconBookmarkFill, IconDiscover, IconHome, IconHomeFill, IconLink, IconPlus, IconSpark, IconUser } from "../icons";
+import { Sheet } from "../ui/Sheet";
+import { Button } from "../ui/Button";
+import { toast } from "../ui/Toast";
 
 const TABS = [
-  { href: "/", label: "Group", icon: IconGroup, active: IconGroupFill },
+  { href: "/", label: "Home", icon: IconHome, active: IconHomeFill },
   { href: "/discover", label: "Discover", icon: IconDiscover, active: IconDiscover },
+  null, // the + button
   { href: "/saved", label: "Saved", icon: IconBookmark, active: IconBookmarkFill },
   { href: "/profile", label: "Profile", icon: IconUser, active: IconUser },
 ];
 
 export function BottomNav() {
   const path = usePathname();
+  const [plus, setPlus] = useState(false);
   const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
   return (
-    <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[460px] border-t border-line/70 bg-cream/85 backdrop-blur-xl">
-      <ul className="grid grid-cols-4">
-        {TABS.map((t) => {
-          const on = isActive(t.href);
-          const Icon = on ? t.active : t.icon;
-          return (
-            <li key={t.href}>
-              <Link
-                href={t.href}
-                className={cx(
-                  "relative flex flex-col items-center gap-0.5 pb-2 pt-2.5 text-[10.5px] font-medium tracking-wide",
-                  on ? "text-ink" : "text-stone",
-                )}
-              >
-                {on && <motion.span layoutId="nav-dot" className="absolute top-0 h-[2px] w-6 rounded-full bg-ink" />}
-                <Icon size={23} strokeWidth={on ? 1.9 : 1.6} />
-                {t.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <>
+      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[460px] border-t border-line/70 bg-paper/90 backdrop-blur-xl">
+        <ul className="grid grid-cols-5 items-center">
+          {TABS.map((t) => {
+            if (!t)
+              return (
+                <li key="plus" className="flex justify-center">
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setPlus(true)}
+                    aria-label="Add to the group"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-cream shadow-[0_8px_18px_-8px_rgba(60,74,58,0.7)]"
+                  >
+                    <IconPlus size={24} strokeWidth={2} />
+                  </motion.button>
+                </li>
+              );
+            const on = isActive(t.href);
+            const Icon = on ? t.active : t.icon;
+            return (
+              <li key={t.href}>
+                <Link
+                  href={t.href}
+                  className={cx("flex flex-col items-center gap-0.5 pb-2 pt-2.5 text-[10.5px] font-medium", on ? "text-accent" : "text-stone")}
+                >
+                  <Icon size={23} strokeWidth={on ? 1.9 : 1.6} />
+                  {t.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+      <PlusSheet open={plus} onClose={() => setPlus(false)} />
+    </>
+  );
+}
+
+/** Listeners don't post; "+" grows the group instead. */
+function PlusSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const router = useRouter();
+  const isPlus = useApp((s) => s.user?.subscriptionStatus === "plus");
+  const [suggesting, setSuggesting] = useState(false);
+  const [name, setName] = useState("");
+
+  const close = () => {
+    setSuggesting(false);
+    setName("");
+    onClose();
+  };
+
+  return (
+    <Sheet open={open} onClose={close} title="Grow the group">
+      {suggesting ? (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            toast(`Noted. We'll ask ${name.trim()}.`, "✨");
+            close();
+          }}
+          className="space-y-3 pt-1"
+        >
+          <p className="text-[14px] text-ink-2">Who should join next? Founders, artists, athletes, your favourite teacher. We read every suggestion.</p>
+          <input
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Their name or @handle"
+            className="h-12 w-full rounded-full border border-line bg-paper px-5 text-[15px] outline-none focus:border-accent/40"
+          />
+          <Button className="w-full" disabled={!name.trim()}>
+            Suggest them
+          </Button>
+        </form>
+      ) : (
+        <div className="-mx-2 space-y-1">
+          <Row
+            icon={<IconLink size={20} />}
+            title="Invite a friend"
+            body="Add someone to the group"
+            onClick={async () => {
+              const url = `${location.origin}/welcome`;
+              try {
+                if (navigator.share) await navigator.share({ title: "VoysNote", text: "Join me in the world's most interesting group chat.", url });
+                else {
+                  await navigator.clipboard.writeText(url);
+                  toast("Invite link copied", "🔗");
+                }
+              } catch {}
+              close();
+            }}
+          />
+          <Row icon={<IconSpark size={20} />} title="Suggest a voice" body="Tell us who should join next" onClick={() => setSuggesting(true)} />
+          <Row
+            icon={<IconBookmark size={20} />}
+            title="New collection"
+            body={isPlus ? "Organise your favourite VoysNotes" : "Part of VoysNote+"}
+            onClick={() => {
+              close();
+              router.push(isPlus ? "/saved?tab=collections" : "/plus");
+            }}
+          />
+        </div>
+      )}
+    </Sheet>
+  );
+}
+
+function Row({ icon, title, body, onClick }: { icon: React.ReactNode; title: string; body: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="flex w-full items-center gap-3.5 rounded-2xl p-3 text-left hover:bg-mist">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">{icon}</span>
+      <span>
+        <span className="block text-[15px] font-semibold">{title}</span>
+        <span className="block text-[13px] text-stone">{body}</span>
+      </span>
+    </button>
   );
 }

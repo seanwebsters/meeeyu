@@ -10,6 +10,7 @@ import { supabaseConfigured } from "@/lib/supabase/client";
 import { BottomNav } from "./BottomNav";
 import { MiniPlayer } from "./MiniPlayer";
 import { ShareSheetHost } from "../note/ShareSheet";
+import { NoteSheetsHost } from "../note/NoteSheets";
 import { Toaster, toast } from "../ui/Toast";
 
 /** Global runtime for the tabbed app: guard, player wiring, live arrivals. */
@@ -36,6 +37,7 @@ export function AppShell({ children, nav = true }: { children: React.ReactNode; 
         </>
       )}
       <ShareSheetHost />
+      <NoteSheetsHost />
       <Toaster />
     </>
   );

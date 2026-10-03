@@ -193,3 +193,119 @@ export function VMark({ size = 28, className = "" }: { size?: number; className?
     </svg>
   );
 }
+
+export const IconHome = (p: P) => (
+  <Svg {...p}>
+    <path d="M4.5 10.5 12 4.5l7.5 6V19a1 1 0 0 1-1 1h-4v-5.5h-5V20h-4a1 1 0 0 1-1-1v-8.5Z" />
+  </Svg>
+);
+export const IconHomeFill = (p: P) => (
+  <Svg {...p} fill="currentColor">
+    <path d="M4.5 10.5 12 4.5l7.5 6V19a1 1 0 0 1-1 1h-4v-5.5h-5V20h-4a1 1 0 0 1-1-1v-8.5Z" />
+  </Svg>
+);
+
+export const IconHeart = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 19.5s-7-4.3-7-9.6A4 4 0 0 1 12 7.6a4 4 0 0 1 7 2.3c0 5.3-7 9.6-7 9.6Z" />
+  </Svg>
+);
+export const IconHeartFill = (p: P) => (
+  <Svg {...p} fill="currentColor" stroke="none">
+    <path d="M12 19.5s-7-4.3-7-9.6A4 4 0 0 1 12 7.6a4 4 0 0 1 7 2.3c0 5.3-7 9.6-7 9.6Z" />
+  </Svg>
+);
+
+export const IconComment = (p: P) => (
+  <Svg {...p}>
+    <path d="M5 6.5A1.5 1.5 0 0 1 6.5 5h11A1.5 1.5 0 0 1 19 6.5v8a1.5 1.5 0 0 1-1.5 1.5H10l-4 3.5V16h0a1 1 0 0 1-1-1V6.5Z" />
+  </Svg>
+);
+
+export const IconMore = ({ size = 20, ...p }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden {...p}>
+    <circle cx="5.5" cy="12" r="1.6" />
+    <circle cx="12" cy="12" r="1.6" />
+    <circle cx="18.5" cy="12" r="1.6" />
+  </svg>
+);
+
+export const IconArrowRight = (p: P) => (
+  <Svg {...p}>
+    <path d="M5 12h14m0 0-5-5m5 5-5 5" />
+  </Svg>
+);
+
+export const IconCrown = (p: P) => (
+  <Svg {...p} fill="currentColor" stroke="none">
+    <path d="M4 8.5 8 12l4-6 4 6 4-3.5-1.6 9.5H5.6L4 8.5Z" />
+    <rect x="5.6" y="18.8" width="12.8" height="1.6" rx="0.8" />
+  </Svg>
+);
+
+export const IconStar = (p: P) => (
+  <Svg {...p} fill="currentColor" stroke="none">
+    <path d="m12 4 2.3 4.9 5.2.6-3.9 3.6 1 5.2L12 15.7l-4.6 2.6 1-5.2L4.5 9.5l5.2-.6L12 4Z" />
+  </Svg>
+);
+
+export const IconClock = (p: P) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="7.5" />
+    <path d="M12 8v4.3l2.8 1.7" />
+  </Svg>
+);
+
+// --- Category glyphs ---------------------------------------------------------
+
+export const CATEGORY_ICONS: Record<string, (p: P) => React.ReactElement> = {
+  Creativity: (p) => (
+    <Svg {...p}>
+      <path d="M12 4.5a7.5 7.5 0 1 0 0 15c1.2 0 1.6-.9 1.3-1.7-.4-1 .3-2 1.4-2h1.6a3.2 3.2 0 0 0 3.2-3.2c0-4.4-3.4-8.1-7.5-8.1Z" />
+      <circle cx="8.4" cy="11" r="1" fill="currentColor" />
+      <circle cx="11" cy="7.9" r="1" fill="currentColor" />
+      <circle cx="15" cy="8.6" r="1" fill="currentColor" />
+    </Svg>
+  ),
+  Business: (p) => (
+    <Svg {...p}>
+      <path d="M5 19.5h14M7 19.5v-5M11 19.5V9.5M15 19.5v-7M19 19.5V5" />
+    </Svg>
+  ),
+  Music: (p) => (
+    <Svg {...p}>
+      <path d="M9.5 17.5V6l9-1.5v11" />
+      <circle cx="7.5" cy="17.5" r="2" />
+      <circle cx="16.5" cy="15.5" r="2" />
+    </Svg>
+  ),
+  Sport: (p) => (
+    <Svg {...p}>
+      <circle cx="12" cy="12" r="7.5" />
+      <path d="m12 8.3 3 2.2-1.1 3.6h-3.8L9 10.5l3-2.2ZM12 4.5v3.8M15 10.5l3.9-1.3M13.9 14.1l2.3 3.3M10.1 14.1l-2.3 3.3M9 10.5 5.1 9.2" />
+    </Svg>
+  ),
+  Life: (p) => (
+    <Svg {...p}>
+      <circle cx="12" cy="12" r="3.5" />
+      <path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2M6 6l1.4 1.4M16.6 16.6 18 18M6 18l1.4-1.4M16.6 7.4 18 6" />
+    </Svg>
+  ),
+  Confidence: (p) => (
+    <Svg {...p}>
+      <path d="M12 18.5c-2.5-1.6-4-4.2-4-7 0-2.3 1.6-4.5 4-6 2.4 1.5 4 3.7 4 6 0 2.8-1.5 5.4-4 7Z" />
+      <path d="M12 18.5c-3.4 0-6.8-1.8-8-5 1.6-.6 3.3-.6 4.6 0M12 18.5c3.4 0 6.8-1.8 8-5-1.6-.6-3.3-.6-4.6 0" />
+    </Svg>
+  ),
+  Culture: (p) => (
+    <Svg {...p}>
+      <path d="M4.5 9 12 4.5 19.5 9h-15ZM5 19.5h14M6.5 11v6.5M10 11v6.5M14 11v6.5M17.5 11v6.5" />
+    </Svg>
+  ),
+  Wellness: (p) => (
+    <Svg {...p}>
+      <path d="M6 18c0-7 4.5-11.5 13-12.5C18.5 13.5 14 18 7 18" />
+      <path d="M6 18c2.5-3.5 5-5.8 8.5-7.5" />
+    </Svg>
+  ),
+};

@@ -112,3 +112,10 @@ export function uid(prefix = "id") {
 }
 
 export const TIME = { MIN, HOUR, DAY };
+
+/** "just now", "3m ago", "2d ago", "24 Sept" */
+export function ago(iso: string, now: number) {
+  const s = relativeShort(iso, now);
+  if (s === "now") return "just now";
+  return /^\d+[mhd]$/.test(s) ? `${s} ago` : s;
+}

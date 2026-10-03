@@ -159,6 +159,15 @@ create table public.reactions (
   primary key (user_id, note_id)
 );
 
+create table public.replies (
+  id text primary key default gen_random_uuid()::text,
+  user_id uuid not null references auth.users on delete cascade,
+  note_id text not null references voice_notes on delete cascade,
+  text text not null check (char_length(text) between 1 and 280),
+  created_at timestamptz not null default now()
+);
+create index replies_note_idx on public.replies (note_id, created_at);
+
 create table public.collections (
   id text primary key default gen_random_uuid()::text,
   user_id uuid not null references auth.users on delete cascade,
@@ -266,6 +275,7 @@ alter table public.voice_notes enable row level security;
 alter table public.feed_events enable row level security;
 alter table public.follows enable row level security;
 alter table public.reactions enable row level security;
+alter table public.replies enable row level security;
 alter table public.collections enable row level security;
 alter table public.saved_notes enable row level security;
 alter table public.plays enable row level security;
@@ -304,6 +314,10 @@ do $$ declare t text; begin
     execute format('create policy "own rows" on public.%I for all using (user_id = auth.uid()) with check (user_id = auth.uid())', t);
   end loop;
 end $$;
+
+create policy "read replies" on public.replies for select using (true);
+create policy "write own replies" on public.replies for insert with check (user_id = auth.uid());
+create policy "delete own replies" on public.replies for delete using (user_id = auth.uid() or public.is_admin());
 
 create policy "own subscription" on public.subscriptions for select using (user_id = auth.uid());
 create policy "own purchases" on public.series_purchases for select using (user_id = auth.uid());

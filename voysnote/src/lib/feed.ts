@@ -21,6 +21,8 @@ interface Ctx {
   now: number;
   entitlements: Entitlements;
   userJoinedAt: string | null;
+  /** Narrow the conversation (Following / For You tabs). */
+  only?: (c: Creator) => boolean;
 }
 
 type Raw =
@@ -36,6 +38,7 @@ export function buildFeed(catalog: Catalog, ctx: Ctx): { items: FeedItem[]; pend
   for (const ev of catalog.events) {
     const creator = idx.creators.get(ev.creatorId);
     if (!creator || !isLive(ev.at, ctx.now)) continue;
+    if (ctx.only && !ctx.only(creator)) continue;
     const t = new Date(ev.at).getTime();
     if (!ctx.entitlements.plus && ctx.now - t > 7 * TIME.DAY) continue;
     raw.push({ t, kind: "joined", creator, id: ev.id });
@@ -44,6 +47,7 @@ export function buildFeed(catalog: Catalog, ctx: Ctx): { items: FeedItem[]; pend
   for (const note of catalog.notes) {
     const creator = idx.creators.get(note.creatorId);
     if (!creator) continue;
+    if (ctx.only && !ctx.only(creator)) continue;
     const access = noteAccess(note, ctx.entitlements, ctx.now);
     if (access.state === "hidden") continue;
     if (access.state === "locked" && access.reason === "archive") {
@@ -53,7 +57,7 @@ export function buildFeed(catalog: Catalog, ctx: Ctx): { items: FeedItem[]; pend
     raw.push({ t: new Date(note.publishedAt).getTime(), kind: "note", note, creator, access, id: note.id });
   }
 
-  if (ctx.userJoinedAt) raw.push({ t: new Date(ctx.userJoinedAt).getTime(), kind: "you-joined", id: "you" });
+  if (ctx.userJoinedAt && !ctx.only) raw.push({ t: new Date(ctx.userJoinedAt).getTime(), kind: "you-joined", id: "you" });
 
   raw.sort((a, b) => a.t - b.t);
 
@@ -90,7 +94,7 @@ export function buildFeed(catalog: Catalog, ctx: Ctx): { items: FeedItem[]; pend
       });
       lastSpeaker = r.creator.id;
       sinceSystem++;
-      if (sinceSystem >= 7) {
+      if (sinceSystem >= 7 && !ctx.only) {
         items.push({ kind: "listening", id: `listening_${r.id}`, count: Math.round(LISTENING_BASE * (0.7 + rnd() * 0.6)) });
         sinceSystem = 0;
         lastSpeaker = "";

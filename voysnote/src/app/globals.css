@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --cream: #f3eee5;
-  --paper: #fbf8f2;
-  --mist: #ebe5da;
-  --line: #e2dbcf;
-  --stone: #8a8378;
-  --stone-2: #b3ab9f;
-  --ink-2: #3b3631;
-  --ink: #151310;
-  --ember: #d4522a;
-  --ember-soft: #f3d9cc;
+  --cream: #f4f0e8;
+  --paper: #fffdf9;
+  --mist: #ece7de;
+  --line: #e7e1d6;
+  --stone: #8b857b;
+  --stone-2: #bab3a7;
+  --ink-2: #47433d;
+  --ink: #1d1c19;
+  --accent: #3c4a3a;
+  --accent-2: #55654f;
+  --accent-soft: #e3e8da;
+  --gold: #c39a45;
+  --gold-soft: #f3e9d1;
+  --heart: #e0473d;
 }
 
 @theme inline {
@@ -22,10 +26,13 @@
   --color-stone-2: var(--stone-2);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
-  --color-ember: var(--ember);
-  --color-ember-soft: var(--ember-soft);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-heart: var(--heart);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -54,26 +61,34 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: 60;
-  opacity: 0.32;
+  opacity: 0.22;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.3  0 0 0 0 0.25  0 0 0 0.09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 ::selection {
-  background: var(--ember-soft);
+  background: var(--accent-soft);
 }
 
 .wordmark {
   font-family: var(--font-inter);
   font-weight: 700;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.035em;
 }
 
 .display {
-  font-family: var(--font-instrument), ui-serif, Georgia, serif;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.95;
+  font-family: var(--font-inter);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+/* Soft card: white on cream, hairline border, a whisper of shadow. */
+.card {
+  background: var(--paper);
+  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+  border-radius: 22px;
+  box-shadow: 0 1px 2px rgba(29, 28, 25, 0.03), 0 8px 24px -18px rgba(29, 28, 25, 0.18);
 }
 
 .no-scrollbar::-webkit-scrollbar {

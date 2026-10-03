@@ -56,7 +56,7 @@ export function Teaser({ id }: { id: string }) {
     <div className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))] pt-[max(24px,env(safe-area-inset-top))]">
       <Link href="/" className="flex items-center gap-1.5 self-center">
         <VMark size={20} />
-        <span className="wordmark text-[20px]">voysnote</span>
+        <span className="wordmark text-[20px]">VoysNote</span>
       </Link>
 
       <div className="flex flex-1 flex-col items-center justify-center text-center">
@@ -64,19 +64,19 @@ export function Teaser({ id }: { id: string }) {
           <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={120} pulse={playing} />
         </motion.div>
         <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone">The Group</p>
-        <h1 className="display mt-2 text-[48px] uppercase leading-[0.9]">{storyHeadline(creator, isFirst)}</h1>
+        <h1 className="display mt-2 text-[34px] uppercase leading-[0.95]">{storyHeadline(creator, isFirst)}</h1>
         <p className="mt-3 flex items-center gap-1 text-[14px] text-ink-2">
           {creator.name} {creator.verified && <Verified size={13} />} · {creator.role}
         </p>
 
         <div className="mt-8 w-full max-w-[340px] rounded-[22px] border border-line/70 bg-paper p-3.5 text-left">
-          <p className="mb-2 font-serif text-[19px]">{note.title}</p>
+          <p className="mb-2 font-medium text-[19px]">{note.title}</p>
           <div className="flex items-center gap-3">
             <button
               disabled={locked}
               onClick={() => player.toggle(noteToPlayable(note, creator), { limit })}
               aria-label={playing ? "Pause" : "Play preview"}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-cream disabled:bg-mist disabled:text-stone"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-cream disabled:bg-mist disabled:text-stone"
             >
               {playing ? <IconPause size={16} /> : <IconPlay size={16} className="translate-x-[1px]" />}
             </button>

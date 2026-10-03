@@ -119,7 +119,7 @@ function ShareAction({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`flex flex-col items-center gap-1.5 rounded-2xl py-3.5 text-[12px] font-semibold transition-transform active:scale-95 disabled:opacity-50 ${primary ? "bg-ink text-cream" : "bg-paper text-ink ring-1 ring-line"}`}
+      className={`flex flex-col items-center gap-1.5 rounded-2xl py-3.5 text-[12px] font-semibold transition-transform active:scale-95 disabled:opacity-50 ${primary ? "bg-accent text-cream" : "bg-paper text-ink ring-1 ring-line"}`}
     >
       {icon}
       {label}

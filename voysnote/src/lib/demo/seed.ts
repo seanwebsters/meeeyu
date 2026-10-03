@@ -748,5 +748,8 @@ function ep(seriesId: string, i: number, title: string, line: string) {
 
 export const ONBOARDING_INTERESTS: Category[] = ["Creativity", "Business", "Music", "Sport", "Life", "Confidence", "Culture", "Wellness"];
 
+/** Listeners in the group, for the "+12K in the group" line. */
+export const GROUP_SIZE = 12_480;
+
 /** Baseline audience size for the "listening right now" line. */
 export const LISTENING_BASE = 4281;

@@ -12,21 +12,27 @@ interface Props {
   /** Soft rings radiate out while this person's note is playing. */
   pulse?: boolean;
   ring?: boolean;
+  /** Rounded square, for list thumbnails. */
+  square?: boolean;
 }
 
-export function Avatar({ src, name, size = 40, tone = "#b8a48e", className, pulse, ring }: Props) {
+export function Avatar({ src, name, size = 40, tone = "#b8a48e", className, pulse, ring, square }: Props) {
   const [failed, setFailed] = useState(false);
   const showImg = src && !failed;
   return (
-    <span className={cx("relative inline-flex shrink-0 rounded-full", className)} style={{ width: size, height: size }}>
+    <span className={cx("relative inline-flex shrink-0", square ? "rounded-[12px]" : "rounded-full", className)} style={{ width: size, height: size }}>
       {pulse && (
         <>
-          <span className="pulse-ring absolute inset-0 rounded-full bg-ember/35" />
-          <span className="pulse-ring absolute inset-0 rounded-full bg-ember/25" style={{ animationDelay: "0.6s" }} />
+          <span className="pulse-ring absolute inset-0 rounded-full bg-accent/35" />
+          <span className="pulse-ring absolute inset-0 rounded-full bg-accent/25" style={{ animationDelay: "0.6s" }} />
         </>
       )}
       <span
-        className={cx("relative inline-flex h-full w-full items-center justify-center overflow-hidden rounded-full", ring && "ring-2 ring-cream ring-offset-0")}
+        className={cx(
+          "relative inline-flex h-full w-full items-center justify-center overflow-hidden",
+          square ? "rounded-[12px]" : "rounded-full",
+          ring && "ring-2 ring-cream ring-offset-0",
+        )}
         style={{ background: tone }}
       >
         {showImg ? (

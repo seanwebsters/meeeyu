@@ -6,28 +6,32 @@ import { useEffect, useMemo, useState } from "react";
 import { CATEGORIES, type Category } from "@/lib/types";
 import { actions, useApp, useCatalog } from "@/lib/store/app";
 import { getSupabase, supabaseConfigured } from "@/lib/supabase/client";
-import { LISTENING_BASE } from "@/lib/demo/seed";
+import { GROUP_SIZE, LISTENING_BASE } from "@/lib/demo/seed";
 import { useNow } from "@/lib/store/clock";
-import { cx, formatDuration } from "@/lib/utils";
+import { cx } from "@/lib/utils";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
-import { Waveform } from "../ui/Waveform";
-import { IconBack, IconCheck, IconPlay, VMark, Verified } from "../icons";
+import { CATEGORY_ICONS, IconArrowRight, IconBack, IconCheck, VMark } from "../icons";
 import { toast } from "../ui/Toast";
 
-type Step = "intro" | "auth" | "profile" | "joining";
+type Step = "intro" | "auth" | "interests" | "name" | "joining";
+const PROGRESS: Partial<Record<Step, number>> = { auth: 1, interests: 2, name: 3 };
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const screen = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
-  exit: { opacity: 0, y: -16, transition: { duration: 0.3, ease } },
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
+  exit: { opacity: 0, y: -12, transition: { duration: 0.25, ease } },
 };
+
+// Editorial hero. Falls back to a warm gradient if the photo can't load.
+const HERO = "https://images.unsplash.com/photo-1484755560615-a4c64e778a6c?w=900&h=1500&fit=crop&crop=faces&auto=format&q=75";
 
 export function Onboarding() {
   const params = useSearchParams();
-  const [step, setStep] = useState<Step>(() => (params.get("step") === "profile" ? "profile" : "intro"));
+  const [step, setStep] = useState<Step>(() => (params.get("step") === "profile" ? "interests" : "intro"));
   const [email, setEmail] = useState<string | null>(null);
+  const [interests, setInterests] = useState<Category[]>([]);
   const hasUser = useApp((s) => !!s.user);
   const hydrated = useApp((s) => s.hydrated);
   const router = useRouter();
@@ -43,7 +47,7 @@ export function Onboarding() {
     sb.auth.getUser().then(({ data }) => {
       if (data.user) {
         setEmail(data.user.email ?? null);
-        setStep((s) => (s === "intro" ? "profile" : s));
+        setStep((s) => (s === "intro" ? "interests" : s));
       }
     });
   }, []);
@@ -57,114 +61,127 @@ export function Onboarding() {
           onBack={() => setStep("intro")}
           onDone={(e) => {
             setEmail(e);
-            setStep("profile");
+            setStep("interests");
           }}
         />
       )}
-      {step === "profile" && <Profile key="profile" email={email} onBack={() => setStep("auth")} onDone={() => setStep("joining")} />}
+      {step === "interests" && (
+        <Interests
+          key="interests"
+          initial={interests}
+          onBack={() => setStep("auth")}
+          onDone={(picked) => {
+            setInterests(picked);
+            setStep("name");
+          }}
+        />
+      )}
+      {step === "name" && (
+        <Name
+          key="name"
+          onBack={() => setStep("interests")}
+          onDone={(name) => {
+            actions.completeOnboarding({ name, email, interests });
+            setStep("joining");
+          }}
+        />
+      )}
       {step === "joining" && <Joining key="joining" />}
     </AnimatePresence>
   );
 }
 
-// --- 1. Intro: the group, already in motion -----------------------------------
+function TopBar({ step, onBack, onSkip }: { step: Step; onBack?: () => void; onSkip?: () => void }) {
+  const p = PROGRESS[step] ?? 0;
+  return (
+    <div className="pt-[max(14px,env(safe-area-inset-top))]">
+      <div className="flex h-10 items-center gap-2">
+        {onBack && (
+          <button onClick={onBack} className="-ml-2 rounded-full p-2 text-ink" aria-label="Back">
+            <IconBack size={20} />
+          </button>
+        )}
+        <span className="wordmark flex-1 text-[19px]">VoysNote</span>
+        {onSkip && (
+          <button onClick={onSkip} className="text-[14px] font-medium text-stone hover:text-ink">
+            Skip
+          </button>
+        )}
+      </div>
+      <div className="mt-3 flex gap-1.5">
+        {[1, 2, 3].map((i) => (
+          <span key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-line">
+            <motion.span className="block h-full bg-accent" initial={false} animate={{ width: i <= p ? "100%" : "0%" }} transition={{ duration: 0.5, ease }} />
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- 1. Welcome -----------------------------------------------------------------
 
 function Intro({ onNext }: { onNext: () => void }) {
   const { idx } = useCatalog();
   const maya = idx.creators.get("c_maya")!;
-  const jonah = idx.creators.get("c_jonah")!;
-  const [beat, setBeat] = useState(0);
+  const [heroOk, setHeroOk] = useState(true);
+  const [chip, setChip] = useState(false);
   useEffect(() => {
-    const ts = [700, 1500, 2500, 3600].map((t, i) => setTimeout(() => setBeat(i + 1), t));
-    return () => ts.forEach(clearTimeout);
+    const t = setTimeout(() => setChip(true), 1400);
+    return () => clearTimeout(t);
   }, []);
 
   return (
-    <motion.div {...screen} className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))] pt-[max(28px,env(safe-area-inset-top))]">
-      <div className="flex items-center gap-2">
-        <VMark size={26} />
-        <span className="wordmark text-[24px]">voysnote</span>
+    <motion.div {...screen} className="relative flex min-h-dvh flex-col overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#e9e3d6] via-[#cdbfa8] to-[#8e7f69]">
+        {heroOk && (
+          // eslint-disable-next-line @next/next/no-img-element -- full-bleed editorial photo
+          <img src={HERO} alt="" onError={() => setHeroOk(false)} className="h-full w-full object-cover object-[50%_30%]" />
+        )}
+        <div className="absolute inset-x-0 top-0 h-[45%] bg-gradient-to-b from-cream/85 via-cream/40 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-ink/55 via-ink/15 to-transparent" />
       </div>
 
-      <div className="mt-10">
-        <h1 className="display text-[54px] leading-[0.92]">
-          30 seconds a day from the world&apos;s most <em>interesting</em> people.
-        </h1>
+      <div className="relative px-8 pt-[max(56px,calc(env(safe-area-inset-top)+40px))] text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.6, ease }}
+          className="wordmark text-[44px] text-ink"
+        >
+          VoysNote
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.6, ease }}
+          className="mx-auto mt-2 max-w-[280px] text-[20px] leading-[1.3] text-ink-2"
+        >
+          30 seconds a day from the world&apos;s most interesting people.
+        </motion.p>
       </div>
 
-      {/* A living preview of the group */}
-      <div className="mt-8 flex-1 space-y-3">
+      <div className="relative mt-auto px-6 pb-[max(26px,env(safe-area-inset-bottom))]">
         <AnimatePresence>
-          {beat >= 1 && (
+          {chip && (
             <motion.div
-              key="b1"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center justify-center gap-2 text-[13px] text-ink-2"
+              initial={{ opacity: 0, y: 12, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", damping: 20 }}
+              className="mx-auto mb-4 flex w-fit items-center gap-2 rounded-full bg-paper/90 py-1.5 pl-1.5 pr-3.5 text-[13px] shadow-lg backdrop-blur"
             >
-              <Avatar src={maya.avatar} name={maya.name} tone={maya.tone} size={22} />
+              <Avatar src={maya.avatar} name={maya.name} tone={maya.tone} size={26} />
               <span>
-                <b className="font-semibold text-ink">Maya</b> joined the group
+                <b className="font-semibold">Maya</b> joined the group
               </span>
-            </motion.div>
-          )}
-          {beat >= 2 && (
-            <motion.div
-              key="b2"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", damping: 22 }}
-              className="flex gap-2.5"
-            >
-              <Avatar src={maya.avatar} name={maya.name} tone={maya.tone} size={34} />
-              <div>
-                <p className="mb-1 flex items-center gap-1 text-[13px] font-semibold">
-                  Maya Okafor <Verified size={13} />
-                </p>
-                <div className="flex w-[250px] items-center gap-2.5 rounded-[20px] rounded-tl-[8px] border border-line/70 bg-paper p-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-cream">
-                    <IconPlay size={13} className="translate-x-[1px]" />
-                  </span>
-                  <Waveform data={[0.2, 0.5, 0.8, 0.6, 0.9, 0.4, 0.7, 0.3, 0.6, 0.85, 0.5, 0.3, 0.7, 0.9, 0.55, 0.35, 0.6, 0.2]} progress={0} height={22} />
-                  <span className="text-[11px] tabular-nums text-stone">{formatDuration(27)}</span>
-                </div>
-              </div>
-            </motion.div>
-          )}
-          {beat >= 3 && (
-            <motion.div
-              key="b3"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center justify-center gap-2 text-[13px] text-ink-2"
-            >
-              <Avatar src={jonah.avatar} name={jonah.name} tone={jonah.tone} size={22} />
-              <span>
-                <b className="font-semibold text-ink">Jonah</b> joined the group
-              </span>
-            </motion.div>
-          )}
-          {beat >= 4 && (
-            <motion.div key="b4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-center gap-2 text-[13px] text-stone">
-              Someone new is joining
-              <span className="flex gap-[3px]">
-                {[0, 1, 2].map((i) => (
-                  <span key={i} className="typing-dot h-1.5 w-1.5 rounded-full bg-stone" style={{ animationDelay: `${i * 0.18}s` }} />
-                ))}
-              </span>
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-accent" />
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      <div className="mt-8 space-y-3">
         <Button size="lg" className="w-full" onClick={onNext}>
-          Join the group
+          Join the group <IconArrowRight size={18} />
         </Button>
-        <p className="text-center text-[12px] text-stone">
-          <span className="live-dot mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-ember align-middle" />
-          {LISTENING_BASE.toLocaleString("en-GB")} people are listening right now
-        </p>
+        <p className="mt-3 text-center text-[12px] text-cream/90">A more human internet. One voice at a time.</p>
       </div>
     </motion.div>
   );
@@ -200,14 +217,11 @@ function Auth({ onBack, onDone }: { onBack: () => void; onDone: (email: string |
   };
 
   return (
-    <motion.div {...screen} className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))] pt-[max(20px,env(safe-area-inset-top))]">
-      <button onClick={onBack} className="-ml-2 self-start rounded-full p-2 text-ink" aria-label="Back">
-        <IconBack />
-      </button>
-      <div className="mt-6">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-stone">You&apos;ve been invited</p>
-        <h1 className="display mt-3 text-[46px]">Join the world&apos;s most interesting group chat.</h1>
-        <p className="mt-4 max-w-[320px] text-[15px] leading-relaxed text-ink-2">
+    <motion.div {...screen} className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))]">
+      <TopBar step="auth" onBack={onBack} />
+      <div className="mt-9">
+        <h1 className="display text-[30px]">You&apos;ve been added to the group.</h1>
+        <p className="mt-2 text-[15px] leading-relaxed text-stone">
           Founders, musicians, athletes, actors and experts. They post when they have something worth thirty seconds.
         </p>
       </div>
@@ -215,13 +229,13 @@ function Auth({ onBack, onDone }: { onBack: () => void; onDone: (email: string |
       <div className="mt-auto space-y-3 pt-10">
         {mode === "choose" ? (
           <>
-            <Button size="lg" className="w-full" disabled={busy} onClick={() => oauth("apple")}>
+            <Button size="lg" variant="ink" className="w-full" disabled={busy} onClick={() => oauth("apple")}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                 <path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.6ZM14.2 5.6c.6-.8 1.1-1.8 1-2.9-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.8 1 .1 2.1-.5 2.7-1.3Z" />
               </svg>
               Continue with Apple
             </Button>
-            <Button size="lg" variant="outline" className="w-full bg-paper" disabled={busy} onClick={() => oauth("google")}>
+            <Button size="lg" variant="outline" className="w-full" disabled={busy} onClick={() => oauth("google")}>
               <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
                 <path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8Z" />
                 <path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2.1v2.8A11 11 0 0 0 12 23Z" />
@@ -243,7 +257,7 @@ function Auth({ onBack, onDone }: { onBack: () => void; onDone: (email: string |
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="h-14 w-full rounded-full border border-line bg-paper px-6 text-[16px] outline-none placeholder:text-stone-2 focus:border-ink/40"
+              className="h-14 w-full rounded-full border border-line bg-paper px-6 text-[16px] outline-none placeholder:text-stone-2 focus:border-accent/40"
             />
             <Button size="lg" className="w-full" disabled={busy || !email}>
               {supabaseConfigured ? "Send me a link" : "Continue"}
@@ -262,70 +276,99 @@ function Auth({ onBack, onDone }: { onBack: () => void; onDone: (email: string |
   );
 }
 
-// --- 3. Name + interests -------------------------------------------------------
+// --- 3. Interests --------------------------------------------------------------
 
-function Profile({ email, onBack, onDone }: { email: string | null; onBack: () => void; onDone: () => void }) {
-  const [name, setName] = useState("");
-  const [picked, setPicked] = useState<Category[]>([]);
+function Interests({ initial, onBack, onDone }: { initial: Category[]; onBack: () => void; onDone: (c: Category[]) => void }) {
+  const [picked, setPicked] = useState<Category[]>(initial);
   const toggle = (c: Category) => setPicked((p) => (p.includes(c) ? p.filter((x) => x !== c) : [...p, c]));
-  const ready = name.trim().length > 0 && picked.length >= 3;
 
   return (
-    <motion.div {...screen} className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))] pt-[max(20px,env(safe-area-inset-top))]">
-      <button onClick={onBack} className="-ml-2 self-start rounded-full p-2 text-ink" aria-label="Back">
-        <IconBack />
-      </button>
-      <h1 className="display mt-6 text-[44px]">What should the group call you?</h1>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Your first name"
-        autoComplete="given-name"
-        maxLength={40}
-        className="mt-6 border-b border-line bg-transparent pb-2 text-[26px] font-medium tracking-[-0.02em] outline-none placeholder:text-stone-2 focus:border-ink"
-      />
+    <motion.div {...screen} className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))]">
+      <TopBar step="interests" onBack={onBack} onSkip={() => onDone([])} />
+      <h1 className="display mt-8 text-[30px]">What are you interested in?</h1>
+      <p className="mt-1.5 text-[14px] text-stone">Choose a few to personalise your feed.</p>
 
-      <h2 className="mt-10 text-[15px] font-semibold">Pick a few things you&apos;re into</h2>
-      <p className="mt-1 text-[13px] text-stone">At least three. We&apos;ll tune your recommendations, never the group itself.</p>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {CATEGORIES.map((c) => {
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        {CATEGORIES.map((c, i) => {
           const on = picked.includes(c);
+          const Icon = CATEGORY_ICONS[c];
           return (
             <motion.button
               key={c}
-              whileTap={{ scale: 0.94 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 + i * 0.03 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => toggle(c)}
               aria-pressed={on}
               className={cx(
-                "flex h-11 items-center gap-1.5 rounded-full border px-4 text-[15px] font-medium transition-colors",
-                on ? "border-ink bg-ink text-cream" : "border-line bg-paper text-ink hover:border-ink/30",
+                "relative flex h-[96px] flex-col items-center justify-center gap-2 rounded-[18px] border text-[13px] font-medium transition-colors",
+                on ? "border-accent/50 bg-accent-soft text-accent" : "border-line bg-paper text-ink-2 hover:border-ink/20",
               )}
             >
-              {on && <IconCheck size={15} />}
+              <Icon size={26} />
               {c}
+              <AnimatePresence>
+                {on && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-cream"
+                  >
+                    <IconCheck size={12} strokeWidth={2.6} />
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </motion.button>
           );
         })}
       </div>
 
-      <div className="mt-auto pt-10">
-        <Button
-          size="lg"
-          className="w-full"
-          disabled={!ready}
-          onClick={() => {
-            actions.completeOnboarding({ name, email, interests: picked });
-            onDone();
-          }}
-        >
-          {ready ? "Add me to the group" : picked.length < 3 ? `Pick ${3 - picked.length} more` : "Add your name"}
+      <div className="mt-auto pt-8">
+        <Button size="lg" className="w-full" disabled={picked.length === 0} onClick={() => onDone(picked)}>
+          Continue <IconArrowRight size={18} />
         </Button>
       </div>
     </motion.div>
   );
 }
 
-// --- 4. Being added ------------------------------------------------------------
+// --- 4. Name -------------------------------------------------------------------
+
+function Name({ onBack, onDone }: { onBack: () => void; onDone: (name: string) => void }) {
+  const [name, setName] = useState("");
+  return (
+    <motion.form
+      {...screen}
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (name.trim()) onDone(name);
+      }}
+      className="flex min-h-dvh flex-col px-6 pb-[max(28px,env(safe-area-inset-bottom))]"
+    >
+      <TopBar step="name" onBack={onBack} />
+      <h1 className="display mt-8 text-[30px]">What should the group call you?</h1>
+      <p className="mt-1.5 text-[14px] text-stone">Your first name is perfect.</p>
+      <input
+        autoFocus
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Your first name"
+        autoComplete="given-name"
+        maxLength={40}
+        className="mt-8 h-14 rounded-[18px] border border-line bg-paper px-5 text-[18px] font-medium outline-none placeholder:text-stone-2 focus:border-accent/40"
+      />
+      <div className="mt-auto pt-8">
+        <Button size="lg" className="w-full" disabled={!name.trim()}>
+          Add me to the group <IconArrowRight size={18} />
+        </Button>
+      </div>
+    </motion.form>
+  );
+}
+
+// --- 5. Being added ------------------------------------------------------------
 
 function Joining() {
   const router = useRouter();
@@ -357,12 +400,12 @@ function Joining() {
               animate={{ opacity: 1, x: Math.cos(angle) * r - 20, y: Math.sin(angle) * r - 20, scale: 1 }}
               transition={{ delay: i * 0.06, type: "spring", damping: 16 }}
             >
-              <Avatar src={c.avatar} name={c.name} tone={c.tone} size={40} className="ring-2 ring-cream rounded-full" />
+              <Avatar src={c.avatar} name={c.name} tone={c.tone} size={40} className="rounded-full ring-2 ring-cream" />
             </motion.div>
           );
         })}
         <motion.div
-          className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-ink text-cream"
+          className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-accent text-cream"
           animate={added ? { scale: [1, 1.12, 1] } : {}}
           transition={{ duration: 0.6 }}
         >
@@ -376,8 +419,12 @@ function Joining() {
           </motion.p>
         ) : (
           <motion.div key="added" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-10">
-            <p className="display text-[40px]">You joined the group.</p>
-            <p className="mt-2 text-[14px] text-stone">You and {(LISTENING_BASE + 1).toLocaleString("en-GB")} others. Who&apos;s going to join next?</p>
+            <p className="display text-[30px]">You joined the group.</p>
+            <p className="mt-2 text-[14px] text-stone">
+              You and {(GROUP_SIZE + 1).toLocaleString("en-GB")} others · {LISTENING_BASE.toLocaleString("en-GB")} listening now.
+              <br />
+              Who&apos;s going to join next?
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
