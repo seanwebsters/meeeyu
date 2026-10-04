@@ -91,12 +91,13 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
         {showHeader && (
           <header className="mb-2.5 flex items-center gap-2.5">
             <Link href={`/c/${creator.username}`} aria-label={creator.name} className="shrink-0">
-              <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={32} pulse={playing} />
+              <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={34} pulse={playing} sticker />
             </Link>
             <div className="min-w-0 flex-1">
               <Link href={`/c/${creator.username}`} className="flex items-center gap-1 text-[14px] font-semibold leading-tight tracking-[-0.01em]">
                 <span className="truncate">{creator.name}</span>
                 {creator.verified && <Verified className="shrink-0 text-ink" size={13} />}
+                {playing && <span className="ml-1 shrink-0 rounded-full bg-pop px-2 py-0.5 text-[10px] font-bold text-ink">now playing</span>}
               </Link>
               <p className="truncate text-[12px] text-stone">
                 {creator.role} · {ago(note.publishedAt, now)}
@@ -109,7 +110,7 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
         )}
 
         <div className="flex items-start justify-between gap-2">
-          <p className={cx("text-[19px] font-semibold leading-[1.2] tracking-[-0.025em] text-ink")}>{note.title}</p>
+          <p className={cx("display text-[23px] leading-[1.08] text-ink")}>{note.title}</p>
           {access.state === "open" && access.early && (
             <span className="mt-0.5 shrink-0 rounded-full border border-ink/15 px-2 py-0.5 text-[11px] font-medium text-ink-2">early</span>
           )}
@@ -121,7 +122,7 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
             aria-label={locked ? "Unlock with VoysNote+" : playing ? "Pause" : "Play"}
             className={cx(
               "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-transform duration-200 active:scale-90",
-              locked ? "bg-mist text-ink-2" : "bg-accent text-cream",
+              locked ? "bg-mist text-ink-2" : playing ? "bg-pop text-ink" : "bg-ink text-cream",
             )}
           >
             {locked ? <IconLock size={17} /> : playing ? <IconPause size={16} /> : <IconPlay size={16} className="translate-x-[1px]" />}

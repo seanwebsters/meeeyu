@@ -91,7 +91,7 @@ export function CreatorScreen({ username }: { username: string }) {
       >
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
-            <h1 className="flex items-center gap-1.5 text-[30px] font-semibold leading-tight tracking-[-0.04em]">
+            <h1 className="display flex items-center gap-1.5 text-[36px]">
               <span className="truncate">{creator.name}</span>
               {creator.verified && <Verified size={18} className="shrink-0 text-ink" />}
             </h1>

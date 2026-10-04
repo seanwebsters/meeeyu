@@ -10,9 +10,10 @@ import { noteAccess, ownsSeries } from "@/lib/access";
 import { noteToPlayable } from "@/lib/audio/playable";
 import { useApp, useCatalog, useEntitlements } from "@/lib/store/app";
 import { useNow } from "@/lib/store/clock";
-import { cx, firstName, TIME } from "@/lib/utils";
+import { firstName, TIME } from "@/lib/utils";
 import { Avatar, Portrait } from "../ui/Avatar";
 import { CreatorRow } from "../creator/CreatorRow";
+import { tiltFor } from "../group/SystemItems";
 import { NoteRow } from "../note/NoteRow";
 import { SeriesCard } from "../series/SeriesCard";
 import { CATEGORY_ICONS, IconArrowRight, IconClose, IconDiscover } from "../icons";
@@ -146,11 +147,14 @@ export function DiscoverScreen() {
                 ))}
               </div>
             ) : (
-              <div className="no-scrollbar -mx-5 flex gap-4 overflow-x-auto px-5 pb-1">
+              <div className="no-scrollbar -mx-5 flex gap-4 overflow-x-auto px-5 pb-2 pt-2">
                 {recent.slice(0, 10).map((c, i) => (
-                  <Link key={c.id} href={`/c/${c.username}`} className="flex w-[70px] shrink-0 flex-col items-center text-center">
-                    <span className={cx("rounded-full p-[2px]", i === 0 ? "bg-accent" : "")}>
-                      <Avatar src={c.avatar} name={c.name} tone={c.tone} size={64} className="rounded-full ring-2 ring-cream" />
+                  <Link key={c.id} href={`/c/${c.username}`} className="flex w-[72px] shrink-0 flex-col items-center text-center">
+                    <span className="relative">
+                      <Avatar src={c.avatar} name={c.name} tone={c.tone} size={64} square sticker tilt={tiltFor(c.id) || 3} />
+                      {i === 0 && (
+                        <span className="absolute -right-2 -top-1.5 rotate-12 rounded-full bg-pop px-1.5 py-0.5 text-[10px] font-bold text-ink">new</span>
+                      )}
                     </span>
                     <span className="mt-1.5 w-full truncate text-[12px] font-medium">{firstName(c.name)}</span>
                     <span className="w-full truncate text-[11px] text-stone">{c.role.split(/[,&]/)[0].trim()}</span>
@@ -176,7 +180,7 @@ export function DiscoverScreen() {
                   <Link key={c.id} href={`/c/${c.username}`} className="flex shrink-0 items-end gap-1.5">
                     <span className="pb-1 text-[15px] font-semibold text-ink">{i + 1}</span>
                     <span className="flex w-[64px] flex-col items-center text-center">
-                      <Avatar src={c.avatar} name={c.name} tone={c.tone} size={52} />
+                      <Avatar src={c.avatar} name={c.name} tone={c.tone} size={52} sticker tilt={tiltFor(c.id)} />
                       <span className="mt-1.5 w-full truncate text-[12px] font-medium">{firstName(c.name)}</span>
                       <span className="w-full truncate text-[11px] text-stone">{c.category}</span>
                     </span>

@@ -16,8 +16,10 @@
   --accent-soft: #ebe9e3;
   --gold: #4a4741;
   --gold-soft: #ebe9e3;
-  --heart: #e0473d;
-  --live: #3f6b4a;
+  --heart: #ff4d3d;
+  /* The one pop colour: acid lime. Fills only, always with ink on top. */
+  --pop: #d9f34f;
+  --live: #6fae18;
 }
 
 @theme inline {
@@ -36,6 +38,8 @@
   --color-gold-soft: var(--gold-soft);
   --color-heart: var(--heart);
   --color-live: var(--live);
+  --color-pop: var(--pop);
+  --font-display: var(--font-bricolage), var(--font-inter), sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -75,17 +79,41 @@ body::after {
 }
 
 .wordmark {
-  font-family: var(--font-inter);
-  font-weight: 700;
+  font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+  font-weight: 800;
   letter-spacing: -0.06em;
   text-transform: lowercase;
 }
 
 .display {
-  font-family: var(--font-inter);
-  font-weight: 600;
+  font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+  font-weight: 700;
   letter-spacing: -0.045em;
-  line-height: 1;
+  line-height: 0.98;
+}
+
+/* Sticker: white die-cut border and a soft drop, like a photo stuck on a phone case. */
+.sticker {
+  box-shadow:
+    0 0 0 3px var(--paper),
+    0 8px 18px -8px rgba(18, 18, 17, 0.45);
+}
+
+@keyframes float-up {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), -90px) scale(1.2) rotate(var(--rot));
+    opacity: 0;
+  }
+}
+.float-up {
+  animation: float-up 0.9s var(--ease-out-soft) forwards;
 }
 
 /* Flat surface: no border, no shadow. */

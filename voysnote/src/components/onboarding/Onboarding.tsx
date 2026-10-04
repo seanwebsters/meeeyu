@@ -303,7 +303,7 @@ function Interests({ initial, onBack, onDone }: { initial: Category[]; onBack: (
               aria-pressed={on}
               className={cx(
                 "flex h-12 items-center gap-2 rounded-full px-5 text-[16px] font-medium tracking-[-0.01em] transition-colors",
-                on ? "bg-ink text-cream" : "bg-mist text-ink hover:bg-line",
+                on ? "bg-pop text-ink" : "bg-mist text-ink hover:bg-line",
               )}
             >
               <Icon size={18} />
@@ -403,11 +403,11 @@ function Joining() {
       <AnimatePresence mode="wait">
         {!added ? (
           <motion.p key="adding" exit={{ opacity: 0 }} className="mt-10 text-[15px] text-stone">
-            Adding you to the group…
+            adding you to the group…
           </motion.p>
         ) : (
           <motion.div key="added" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-10">
-            <p className="display text-[36px]">you joined the group.</p>
+            <p className="display text-[44px]">you&apos;re in. 🫶</p>
             <p className="mt-2 text-[14px] text-stone">
               You and {(GROUP_SIZE + 1).toLocaleString("en-GB")} others · {LISTENING_BASE.toLocaleString("en-GB")} listening now.
               <br />

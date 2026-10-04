@@ -14,26 +14,34 @@ interface Props {
   ring?: boolean;
   /** Rounded square, for list thumbnails. */
   square?: boolean;
+  /** White die-cut border + drop shadow. */
+  sticker?: boolean;
+  /** Degrees of playful tilt. */
+  tilt?: number;
 }
 
-export function Avatar({ src, name, size = 40, tone = "#b8a48e", className, pulse, ring, square }: Props) {
+export function Avatar({ src, name, size = 40, tone = "#b8a48e", className, pulse, ring, square, sticker, tilt }: Props) {
   const [failed, setFailed] = useState(false);
   const showImg = src && !failed;
   return (
-    <span className={cx("relative inline-flex shrink-0", square ? "rounded-[12px]" : "rounded-full", className)} style={{ width: size, height: size }}>
+    <span
+      className={cx("relative inline-flex shrink-0", !square && "rounded-full", className)}
+      style={{ width: size, height: size, borderRadius: square ? Math.round(size * 0.28) : undefined, transform: tilt ? `rotate(${tilt}deg)` : undefined }}
+    >
       {pulse && (
         <>
-          <span className="pulse-ring absolute inset-0 rounded-full bg-accent/35" />
-          <span className="pulse-ring absolute inset-0 rounded-full bg-accent/25" style={{ animationDelay: "0.6s" }} />
+          <span className="pulse-ring absolute inset-0 rounded-full bg-pop" />
+          <span className="pulse-ring absolute inset-0 rounded-full bg-pop/70" style={{ animationDelay: "0.6s" }} />
         </>
       )}
       <span
         className={cx(
           "relative inline-flex h-full w-full items-center justify-center overflow-hidden",
-          square ? "rounded-[12px]" : "rounded-full",
+          !square && "rounded-full",
           ring && "ring-2 ring-cream ring-offset-0",
+          sticker && "sticker",
         )}
-        style={{ background: tone }}
+        style={{ background: tone, borderRadius: square ? Math.round(size * 0.28) : undefined }}
       >
         {showImg ? (
           // eslint-disable-next-line @next/next/no-img-element -- remote editorial portraits, sized by CSS

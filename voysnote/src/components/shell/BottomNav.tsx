@@ -25,32 +25,39 @@ export function BottomNav() {
   const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
   return (
     <>
-      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[460px] bg-cream/[0.97] backdrop-blur-xl">
-        <ul className="grid grid-cols-5 items-center">
+      <nav className="pointer-events-none fixed inset-x-0 bottom-[max(14px,env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-[460px] justify-center">
+        <ul className="pointer-events-auto flex items-center gap-1 rounded-full bg-ink/95 p-1.5 shadow-[0_14px_34px_-12px_rgba(18,18,17,0.55)] backdrop-blur-xl">
           {TABS.map((t) => {
             if (!t)
               return (
-                <li key="plus" className="flex justify-center">
+                <li key="plus" className="px-1">
                   <motion.button
-                    whileTap={{ scale: 0.9 }}
+                    whileTap={{ scale: 0.88, rotate: 90 }}
                     onClick={() => setPlus(true)}
                     aria-label="Add to the group"
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-cream"
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-pop text-ink"
                   >
-                    <IconPlus size={20} strokeWidth={2} />
+                    <IconPlus size={21} strokeWidth={2.2} />
                   </motion.button>
                 </li>
               );
             const on = isActive(t.href);
             const Icon = on ? t.active : t.icon;
             return (
-              <li key={t.href}>
+              <li key={t.href} className="relative">
+                {on && (
+                  <motion.span
+                    layoutId="dock-pill"
+                    className="absolute inset-0 rounded-full bg-cream/12"
+                    transition={{ type: "spring", damping: 26, stiffness: 380 }}
+                  />
+                )}
                 <Link
                   href={t.href}
                   aria-label={t.label}
-                  className={cx("flex h-14 items-center justify-center transition-colors", on ? "text-ink" : "text-stone-2")}
+                  className={cx("relative flex h-11 w-12 items-center justify-center rounded-full transition-colors", on ? "text-cream" : "text-cream/45")}
                 >
-                  <Icon size={23} strokeWidth={on ? 2 : 1.7} />
+                  <Icon size={22} strokeWidth={on ? 2 : 1.7} />
                 </Link>
               </li>
             );

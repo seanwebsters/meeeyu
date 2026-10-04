@@ -24,10 +24,10 @@ export function MiniPlayer() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 24, opacity: 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 340 }}
-          className="fixed inset-x-0 bottom-[calc(60px+env(safe-area-inset-bottom))] z-40 mx-auto max-w-[460px] px-3"
+          className="fixed inset-x-0 bottom-[calc(80px+env(safe-area-inset-bottom))] z-40 mx-auto max-w-[460px] px-3"
         >
           <div className="relative flex items-center gap-3 overflow-hidden rounded-[18px] bg-paper py-2 pl-2 pr-2 shadow-[0_10px_30px_-16px_rgba(18,18,17,0.35)]">
-            <Avatar src={current.avatar} name={current.creatorName} size={40} square />
+            <Avatar src={current.avatar} name={current.creatorName} size={40} square tilt={-4} sticker />
             <div className="min-w-0 flex-1">
               <p className="truncate text-[13px] font-semibold">{current.title}</p>
               <p className="truncate text-[12px] text-stone">
@@ -37,7 +37,7 @@ export function MiniPlayer() {
             <button
               onClick={() => (playing ? player.pause() : player.resume())}
               aria-label={playing ? "Pause" : "Play"}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-cream active:scale-90"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-pop text-ink active:scale-90"
             >
               {playing ? <IconPause size={15} /> : <IconPlay size={15} className="translate-x-[1px]" />}
             </button>
@@ -45,7 +45,7 @@ export function MiniPlayer() {
               <IconClose size={18} />
             </button>
             <div className="absolute inset-x-0 bottom-0 h-[2px] bg-mist">
-              <div className="h-full bg-live" style={{ width: `${(position / current.duration) * 100}%` }} />
+              <div className="h-full bg-ink" style={{ width: `${(position / current.duration) * 100}%` }} />
             </div>
           </div>
         </motion.div>

@@ -18,6 +18,21 @@ export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?:
   const ref = useRef<HTMLDivElement>(null);
   const hold = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const held = useRef(false);
+  const [particles, setParticles] = useState<{ id: number; emoji: string; dx: number; rot: number; delay: number }[]>([]);
+
+  // A little burst of the chosen emoji floating up from the button.
+  const pop = (emoji: string) => {
+    const base = Date.now();
+    const fresh = Array.from({ length: 6 }, (_, i) => ({
+      id: base + i,
+      emoji,
+      dx: (i - 2.5) * 12 + (Math.random() - 0.5) * 10,
+      rot: (Math.random() - 0.5) * 50,
+      delay: i * 40,
+    }));
+    setParticles((p) => [...p, ...fresh]);
+    setTimeout(() => setParticles((p) => p.filter((x) => !fresh.includes(x))), 1300);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -32,6 +47,17 @@ export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?:
 
   return (
     <div ref={ref} className="relative">
+      <span className="pointer-events-none absolute bottom-6 left-2" aria-hidden>
+        {particles.map((p) => (
+          <span
+            key={p.id}
+            className="float-up absolute text-[18px]"
+            style={{ ["--dx" as string]: `${p.dx}px`, ["--rot" as string]: `${p.rot}deg`, animationDelay: `${p.delay}ms`, opacity: 0 }}
+          >
+            {p.emoji}
+          </span>
+        ))}
+      </span>
       <button
         disabled={disabled}
         onPointerDown={() => {
@@ -47,7 +73,10 @@ export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?:
         onClick={() => {
           if (held.current) return;
           actions.react(note.id, mine ? mine : "❤️");
-          if (!mine) setBurst((b) => b + 1);
+          if (!mine) {
+            setBurst((b) => b + 1);
+            pop("❤️");
+          }
         }}
         aria-label={mine ? "Remove reaction" : "Like"}
         aria-pressed={!!mine}
@@ -79,6 +108,7 @@ export function ReactionButton({ note, disabled }: { note: VoiceNote; disabled?:
                 transition={{ delay: i * 0.03, type: "spring", damping: 14, stiffness: 400 }}
                 whileTap={{ scale: 1.35 }}
                 onClick={() => {
+                  if (mine !== k) pop(k);
                   actions.react(note.id, k);
                   setOpen(false);
                 }}

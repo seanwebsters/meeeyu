@@ -34,7 +34,7 @@ export default function ProfilePage() {
       </header>
 
       <section className="px-5 pt-8">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-cream">
+        <div className="sticker flex h-20 w-20 -rotate-3 items-center justify-center rounded-full bg-pop text-ink">
           <span className="display text-[30px]">{initials(user.name)}</span>
         </div>
         <h1 className="display mt-4 text-[40px]">{user.name.toLowerCase()}</h1>

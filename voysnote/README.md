@@ -80,14 +80,23 @@ mirrors the same rules on the server.
 
 ### Design
 
-Minimal and near-monochrome: warm off-white, near-black type and actions,
-lowercase microcopy and wordmark ("voysnote"), and big, tight headings.
-Surfaces are flat, with no borders or shadows. Notes read as a thread;
-only the playing note gets a surface. A single small green (`--live`) marks
-what's happening now: live dots, playback progress and "joining"
-indicators. The nav is icons only. The tokens live in
-`src/app/globals.css`; to bring back the moss-green buttons, set `--accent`
-to `#3c4a3a`.
+Gen Z, but premium. The base is minimal: warm off-white, near-black,
+flat surfaces, and notes that read as a thread. Personality comes from a
+few deliberate moves:
+
+- **Bricolage Grotesque** for the wordmark and headings; Inter for
+  everything else.
+- **One pop colour:** acid lime (`--pop`). It's used for fills only, always
+  with ink on top: the "+" button, the playing note, selected interests, and
+  "new" / "you're in" tags. `--live` is a deeper lime for dots and progress.
+- **Stickers:** portraits get a white die-cut border and a slight tilt.
+  Joins are the hero moment: a tilted sticker, big type and a "new" tag.
+- **A floating dark dock** for navigation, and pill tabs.
+- **Emoji bursts** when you react.
+- **Casual microcopy:** lowercase, with "someone's about to join 👀",
+  "who's next? 👀" and "you're in 🫶".
+
+All the tokens live in `src/app/globals.css`.
 
 Navigation is Home / Discover / **+** / Saved / Profile. Listeners don't
 post, so the **+** button grows the group instead: invite a friend,

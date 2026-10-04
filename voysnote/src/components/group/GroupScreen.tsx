@@ -116,7 +116,7 @@ export function GroupScreen() {
     <div className="pb-44">
       <header className="sticky top-0 z-30 bg-cream/[0.97] backdrop-blur-xl">
         <div className="flex items-center gap-1 px-5 pb-0.5 pt-[max(14px,env(safe-area-inset-top))]">
-          <h1 className="wordmark flex-1 text-[26px]">VoysNote</h1>
+          <h1 className="wordmark flex-1 text-[30px]">VoysNote</h1>
           <Link href="/discover?search=1" aria-label="Search" className="rounded-full p-2 text-ink">
             <IconDiscover size={21} />
           </Link>
@@ -127,18 +127,25 @@ export function GroupScreen() {
         </div>
 
         <p className="flex items-center gap-1.5 px-5 text-[12px] text-stone">
-          <span className="live-dot h-1.5 w-1.5 rounded-full bg-live" />
+          <span className="live-dot h-2 w-2 rounded-full bg-live" />
           {formatCount(GROUP_SIZE)} in the group · {listeningNow(now).toLocaleString("en-GB")} listening
         </p>
 
-        <nav className="flex gap-5 px-5 pb-3 pt-3">
+        <nav className="flex gap-1 px-4 pb-3 pt-3">
           {TABS.map(([k, label]) => (
             <button
               key={k}
               onClick={() => switchTab(k)}
-              className={cx("relative text-[15px] font-semibold tracking-[-0.01em] transition-colors", tab === k ? "text-ink" : "text-stone-2")}
+              className={cx("relative h-9 rounded-full px-4 text-[14px] font-semibold transition-colors", tab === k ? "text-cream" : "text-stone")}
             >
-              {label}
+              {tab === k && (
+                <motion.span
+                  layoutId="group-tab"
+                  className="absolute inset-0 rounded-full bg-ink"
+                  transition={{ type: "spring", damping: 28, stiffness: 400 }}
+                />
+              )}
+              <span className="relative">{label}</span>
             </button>
           ))}
         </nav>
