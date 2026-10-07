@@ -11,7 +11,7 @@ interface Props {
   onSeek?: (fraction: number) => void;
   height?: number;
   className?: string;
-  tone?: "ink" | "cream";
+  tone?: "ink" | "cream" | "black";
   blurred?: boolean;
 }
 
@@ -25,8 +25,8 @@ export function Waveform({ data, progress, playing, onSeek, height = 30, classNa
     onSeek(Math.max(0, Math.min(1, (clientX - r.left) / r.width)));
   };
 
-  const played = tone === "ink" ? "bg-accent" : "bg-cream";
-  const rest = tone === "ink" ? "bg-stone-2/80" : "bg-cream/35";
+  const played = { ink: "bg-accent", cream: "bg-cream", black: "bg-black" }[tone];
+  const rest = { ink: "bg-stone-2/80", cream: "bg-cream/35", black: "bg-black/25" }[tone];
 
   return (
     <div

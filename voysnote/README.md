@@ -100,6 +100,17 @@ contrast.
   asterisk. Every "joined the group" moment is a full block in that
   creator's pair. "Who's next?" is purple and pink, and VoysNote+ is a
   purple block.
+- **Every note is a character.** Notes are speech bubbles in the
+  creator's colour, each with a little face (`src/lib/character.ts`,
+  `components/note/Face.tsx`). What they do decides what the character
+  wears: headphones for producers and singers, a chef's hat, a headband for
+  athletes, a beanie for the mountaineer, a beret for architects and
+  artists, shades for actors, a bow tie for founders, and glasses for
+  writers, doctors and scientists. Personality sets the eyes (the comedian
+  winks; the sleep scientist looks sleepy). The expression reacts to the
+  note: a question raises its brows, "Write the bad version" looks worried,
+  and locked notes keep their lips zipped. Faces blink, and they talk while
+  their note plays.
 - **Light green** (`--accent`) is the action colour: primary buttons, the
   "+" button, the played part of the waveform and "now playing".
 - **Categories and interests** cycle red, pink, purple, green.
