@@ -64,7 +64,7 @@ function RepliesSheet() {
                 <span
                   className={cx(
                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold",
-                    r.mine ? "bg-accent text-cream" : "bg-mist text-ink-2",
+                    r.mine ? "bg-accent text-black" : "bg-mist text-ink-2",
                   )}
                 >
                   {initials(r.userName)}
@@ -96,7 +96,7 @@ function RepliesSheet() {
               placeholder={`Reply to ${firstName(creator.name)}…`}
               className="h-11 flex-1 rounded-full border border-line bg-paper px-4 text-[14px] outline-none focus:border-accent/40"
             />
-            <button disabled={!text.trim()} className="h-11 rounded-full bg-accent px-5 text-[14px] font-semibold text-cream disabled:opacity-40">
+            <button disabled={!text.trim()} className="h-11 rounded-full bg-accent px-5 text-[14px] font-semibold text-black disabled:opacity-40">
               Send
             </button>
           </form>

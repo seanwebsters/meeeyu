@@ -128,7 +128,7 @@ export function GroupScreen() {
 
         <p className="flex items-center gap-1.5 px-5 text-[12px] text-stone">
           <span className="live-dot h-2 w-2 rounded-full bg-live" />
-          {formatCount(GROUP_SIZE)} in the group · {listeningNow(now).toLocaleString("en-GB")} listening
+          {formatCount(GROUP_SIZE)} in the chat · {listeningNow(now).toLocaleString("en-GB")} tuned in
         </p>
 
         <nav className="flex gap-1 px-4 pb-3 pt-3">
@@ -187,7 +187,7 @@ export function GroupScreen() {
               toBottom(true);
               setNewArrival(null);
             }}
-            className="fixed bottom-[calc(140px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-cream shadow-lg"
+            className="fixed bottom-[calc(140px+env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-black shadow-lg"
           >
             <IconArrowDown size={15} /> {newArrival}
           </motion.button>

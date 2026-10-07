@@ -102,7 +102,7 @@ export function DiscoverScreen() {
       {!results && (
         <div className="px-5 pt-3">
           <h1 className="display text-[40px]">discover</h1>
-          <p className="mt-1 text-[14px] text-stone">new voices. fresh perspectives. a bigger world.</p>
+          <p className="mt-1 text-[14px] text-stone">new faces. big thoughts. 30 secs each.</p>
         </div>
       )}
 
@@ -153,7 +153,7 @@ export function DiscoverScreen() {
                     <span className="relative">
                       <Avatar src={c.avatar} name={c.name} tone={c.tone} size={64} square sticker tilt={tiltFor(c.id) || 3} />
                       {i === 0 && (
-                        <span className="absolute -right-2 -top-1.5 rotate-12 rounded-full bg-pop px-1.5 py-0.5 text-[10px] font-bold text-ink">new</span>
+                        <span className="absolute -right-2 -top-1.5 rotate-12 rounded-full bg-pop px-1.5 py-0.5 text-[10px] font-bold text-black">new</span>
                       )}
                     </span>
                     <span className="mt-1.5 w-full truncate text-[12px] font-medium">{firstName(c.name)}</span>
@@ -257,7 +257,7 @@ export function FeaturedSeries({ id }: { id: string }) {
         <h3 className="text-[20px] font-semibold leading-tight tracking-[-0.02em]">{s.title}</h3>
         <p className="mt-1.5 line-clamp-3 text-[12px] leading-snug text-stone">{s.description}</p>
         <div className="mt-auto flex items-center gap-2 pt-3">
-          <span className="rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-cream">
+          <span className="rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-black">
             {owned ? "Continue" : s.price === 0 ? "Free" : `£${(s.price / 100).toFixed(2)}`}
           </span>
           <span className="flex items-center gap-1 text-[12px] font-medium text-accent">

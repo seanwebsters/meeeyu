@@ -26,7 +26,7 @@ export function BottomNav() {
   return (
     <>
       <nav className="pointer-events-none fixed inset-x-0 bottom-[max(14px,env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-[460px] justify-center">
-        <ul className="pointer-events-auto flex items-center gap-1 rounded-full bg-ink/95 p-1.5 shadow-[0_14px_34px_-12px_rgba(18,18,17,0.55)] backdrop-blur-xl">
+        <ul className="pointer-events-auto flex items-center gap-1 rounded-full bg-paper/85 p-1.5 shadow-[0_14px_40px_-10px_rgba(0,0,0,0.8)] ring-1 ring-white/10 backdrop-blur-xl">
           {TABS.map((t) => {
             if (!t)
               return (
@@ -35,7 +35,7 @@ export function BottomNav() {
                     whileTap={{ scale: 0.88, rotate: 90 }}
                     onClick={() => setPlus(true)}
                     aria-label="Add to the group"
-                    className="flex h-11 w-11 items-center justify-center rounded-full bg-pop text-ink"
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-pop text-black"
                   >
                     <IconPlus size={21} strokeWidth={2.2} />
                   </motion.button>
@@ -48,14 +48,14 @@ export function BottomNav() {
                 {on && (
                   <motion.span
                     layoutId="dock-pill"
-                    className="absolute inset-0 rounded-full bg-cream/12"
+                    className="absolute inset-0 rounded-full bg-white/10"
                     transition={{ type: "spring", damping: 26, stiffness: 380 }}
                   />
                 )}
                 <Link
                   href={t.href}
                   aria-label={t.label}
-                  className={cx("relative flex h-11 w-12 items-center justify-center rounded-full transition-colors", on ? "text-cream" : "text-cream/45")}
+                  className={cx("relative flex h-11 w-12 items-center justify-center rounded-full transition-colors", on ? "text-ink" : "text-ink/40")}
                 >
                   <Icon size={22} strokeWidth={on ? 2 : 1.7} />
                 </Link>

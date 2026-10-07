@@ -75,7 +75,7 @@ export function SeriesScreen({ id }: { id: string }) {
     <div className="pb-48">
       <div className="relative">
         <Portrait src={series.coverImage} name={creator.name} tone={creator.tone} className="aspect-[4/5] w-full" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-transparent to-cream" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-cream" />
         <button
           onClick={() => (history.length > 1 ? router.back() : router.push("/discover"))}
           aria-label="Back"
@@ -216,7 +216,7 @@ function EpisodeRow({
           aria-label={playing ? "Pause" : "Play"}
           className={cx(
             "flex h-10 w-10 items-center justify-center rounded-full",
-            done && !playing ? "border border-accent/30 text-accent" : "bg-accent text-cream",
+            done && !playing ? "border border-accent/30 text-accent" : "bg-accent text-black",
           )}
         >
           {playing ? <IconPause size={15} /> : done ? <IconCheck size={16} /> : <IconPlay size={15} className="translate-x-[1px]" />}

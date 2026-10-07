@@ -24,7 +24,7 @@ export function Sheet({ open, onClose, children, title }: { open: boolean; onClo
       {open && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <motion.div
-            className="absolute inset-0 bg-ink/30 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-black/60 backdrop-blur-[3px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

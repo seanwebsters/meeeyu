@@ -80,23 +80,25 @@ mirrors the same rules on the server.
 
 ### Design
 
-Gen Z, but premium. The base is minimal: warm off-white, near-black,
-flat surfaces, and notes that read as a thread. Personality comes from a
-few deliberate moves:
+Gen Z, dark by default. Off-black backgrounds, off-white type, flat
+surfaces, and notes that read as a thread. Personality comes from:
 
 - **Bricolage Grotesque** for the wordmark and headings; Inter for
   everything else.
-- **One pop colour:** acid lime (`--pop`). It's used for fills only, always
-  with ink on top: the "+" button, the playing note, selected interests, and
-  "new" / "you're in" tags. `--live` is a deeper lime for dots and progress.
-- **Stickers:** portraits get a white die-cut border and a slight tilt.
-  Joins are the hero moment: a tilted sticker, big type and a "new" tag.
-- **A floating dark dock** for navigation, and pill tabs.
+- **Acid lime** (`--accent` / `--pop`) as the hero colour, always with
+  black type. It covers primary buttons, the "+" button, the played part of
+  the waveform, the playing note's glow and "now playing" tag, selected
+  interests, and "new" / "you're in 🫶" tags.
+- **Stickers:** portraits get a bright white die-cut border and a slight
+  tilt. Joins are the hero moment: a tilted sticker, big type and a "new"
+  tag.
+- **A floating glass dock** for navigation, and pill tabs.
 - **Emoji bursts** when you react.
-- **Casual microcopy:** lowercase, with "someone's about to join 👀",
-  "who's next? 👀" and "you're in 🫶".
+- **Casual microcopy:** "12K in the chat · 4,281 tuned in", "someone's
+  about to join 👀", "who's next? 👀" and "ping me".
 
-All the tokens live in `src/app/globals.css`.
+The colour tokens in `src/app/globals.css` are semantic ("cream" is the
+background, "ink" the foreground), so a light theme is a token swap.
 
 Navigation is Home / Discover / **+** / Saved / Profile. Listeners don't
 post, so the **+** button grows the group instead: invite a friend,

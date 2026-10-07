@@ -45,7 +45,7 @@ export function Pill({ children, tone = "stone" }: { children: React.ReactNode; 
       className={cx(
         "inline-flex items-center rounded-full px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider",
         tone === "ink" && "bg-ink text-cream",
-        tone === "accent" && "bg-accent text-cream",
+        tone === "accent" && "bg-accent text-black",
         tone === "stone" && "bg-mist text-ink-2",
       )}
     >

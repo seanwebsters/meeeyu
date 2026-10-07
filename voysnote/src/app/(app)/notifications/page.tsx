@@ -134,13 +134,13 @@ function Row({ n, fresh, now }: { n: Item; fresh: boolean; now: number }) {
         <button
           onClick={() => player.toggle(noteToPlayable(note, c))}
           aria-label={status === "playing" ? "Pause" : "Play"}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-cream"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-black"
         >
           {status === "playing" ? <IconPause size={13} /> : <IconPlay size={13} className="translate-x-[1px]" />}
         </button>
       )}
       {n.kind === "joined" && !following && (
-        <button onClick={() => actions.toggleFollow(c.id)} className="shrink-0 rounded-full bg-accent px-3.5 py-1.5 text-[12px] font-semibold text-cream">
+        <button onClick={() => actions.toggleFollow(c.id)} className="shrink-0 rounded-full bg-accent px-3.5 py-1.5 text-[12px] font-semibold text-black">
           Follow
         </button>
       )}

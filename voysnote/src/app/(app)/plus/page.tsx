@@ -146,7 +146,7 @@ export default function PlusPage() {
               <Portrait src={fc.portrait ?? fc.avatar} name={fc.name} tone={fc.tone} className="h-full w-full" />
               <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-paper to-transparent" />
             </div>
-            <span className="absolute bottom-3 right-3 z-10 rounded-full bg-accent px-4 py-1.5 text-[13px] font-semibold text-cream">
+            <span className="absolute bottom-3 right-3 z-10 rounded-full bg-accent px-4 py-1.5 text-[13px] font-semibold text-black">
               {formatPrice(featured.price)}
             </span>
           </Link>

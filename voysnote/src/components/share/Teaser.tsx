@@ -76,7 +76,7 @@ export function Teaser({ id }: { id: string }) {
               disabled={locked}
               onClick={() => player.toggle(noteToPlayable(note, creator), { limit })}
               aria-label={playing ? "Pause" : "Play preview"}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-cream disabled:bg-mist disabled:text-stone"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-black disabled:bg-mist disabled:text-stone"
             >
               {playing ? <IconPause size={16} /> : <IconPlay size={16} className="translate-x-[1px]" />}
             </button>

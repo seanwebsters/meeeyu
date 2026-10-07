@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: { default: "VoysNote", template: "%s · VoysNote" },
   description: "30 seconds a day from the world's most interesting people.",
   applicationName: "VoysNote",
-  appleWebApp: { capable: true, title: "VoysNote", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "VoysNote", statusBarStyle: "black-translucent" },
   openGraph: {
     title: "VoysNote",
     description: "30 seconds a day from the world's most interesting people.",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4f0e8",
+  themeColor: "#0c0c0b",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

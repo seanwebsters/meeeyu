@@ -37,7 +37,7 @@ export function MiniPlayer() {
             <button
               onClick={() => (playing ? player.pause() : player.resume())}
               aria-label={playing ? "Pause" : "Play"}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-pop text-ink active:scale-90"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-pop text-black active:scale-90"
             >
               {playing ? <IconPause size={15} /> : <IconPlay size={15} className="translate-x-[1px]" />}
             </button>

@@ -43,7 +43,7 @@ export function NoteRow({
       <button onClick={toggle} className="relative shrink-0" aria-label={locked ? "Unlock" : playing ? "Pause" : "Play"}>
         <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={52} square />
         {(active || locked) && (
-          <span className="absolute inset-0 flex items-center justify-center rounded-[12px] bg-ink/35 text-cream">
+          <span className="absolute inset-0 flex items-center justify-center rounded-[12px] bg-black/45 text-white">
             {locked ? <IconLock size={16} /> : playing ? <IconPause size={16} /> : <IconPlay size={16} />}
           </span>
         )}
@@ -62,7 +62,7 @@ export function NoteRow({
           aria-label={locked ? "Unlock" : playing ? "Pause" : "Play"}
           className={cx(
             "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-transform active:scale-90",
-            locked ? "bg-mist text-ink-2" : active ? "bg-accent text-cream" : "border border-ink/15 text-ink",
+            locked ? "bg-mist text-ink-2" : active ? "bg-accent text-black" : "border border-ink/15 text-ink",
           )}
         >
           {locked ? <IconLock size={14} /> : playing ? <IconPause size={13} /> : <IconPlay size={13} className="translate-x-[1px]" />}

@@ -46,7 +46,7 @@ export function CreatorScreen({ username }: { username: string }) {
         <div className="h-24 w-24 rounded-full bg-gradient-to-br from-stone-2 to-mist" />
         <h1 className="display mt-6 text-[28px]">not in the group. yet.</h1>
         <p className="mt-2 text-[14px] text-stone">Turn on notifications and you&apos;ll know the moment they join.</p>
-        <Link href="/" className="mt-6 rounded-full bg-accent px-5 py-2.5 text-[14px] font-semibold text-cream">
+        <Link href="/" className="mt-6 rounded-full bg-accent px-5 py-2.5 text-[14px] font-semibold text-black">
           Back to the group
         </Link>
       </div>
@@ -68,16 +68,16 @@ export function CreatorScreen({ username }: { username: string }) {
     <div className="pb-40">
       <div className="relative">
         <Portrait src={creator.portrait ?? creator.avatar} name={creator.name} tone={creator.tone} className="aspect-[5/4] w-full" />
-        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ink/35 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/50 to-transparent" />
         <div className="absolute inset-x-0 top-0 flex justify-between px-4 pt-[max(14px,env(safe-area-inset-top))] text-cream">
           <button
             onClick={() => (history.length > 1 ? router.back() : router.push("/"))}
             aria-label="Back"
-            className="rounded-full bg-ink/20 p-2 backdrop-blur"
+            className="rounded-full bg-black/35 p-2 text-white backdrop-blur"
           >
             <IconBack size={20} />
           </button>
-          <button onClick={() => setMenu(true)} aria-label="More" className="rounded-full bg-ink/20 p-2 backdrop-blur">
+          <button onClick={() => setMenu(true)} aria-label="More" className="rounded-full bg-black/35 p-2 text-white backdrop-blur">
             <IconMore size={20} />
           </button>
         </div>

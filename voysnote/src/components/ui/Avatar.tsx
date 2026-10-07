@@ -56,7 +56,7 @@ export function Avatar({ src, name, size = 40, tone = "#b8a48e", className, puls
             className="h-full w-full object-cover grayscale-[12%] contrast-[1.02]"
           />
         ) : (
-          <span className="display text-cream/95 select-none" style={{ fontSize: size * 0.44 }}>
+          <span className="display text-white/95 select-none" style={{ fontSize: size * 0.44 }}>
             {initials(name)}
           </span>
         )}
@@ -75,7 +75,7 @@ export function Portrait({ src, name, tone = "#b8a48e", className }: { src?: str
         <img src={src} alt={name} onError={() => setFailed(true)} className="h-full w-full object-cover grayscale-[15%]" />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
-          <span className="display text-[120px] text-cream/90">{initials(name)}</span>
+          <span className="display text-[120px] text-white/90">{initials(name)}</span>
         </div>
       )}
     </div>

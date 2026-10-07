@@ -84,7 +84,7 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
       className={cx(
         // Flat: no card. The note only gets a surface while it plays.
         "relative -mx-2 overflow-hidden rounded-[22px] transition-colors duration-300",
-        active ? "bg-paper" : "bg-transparent",
+        active ? "bg-paper shadow-[0_0_0_1px_rgba(217,243,79,0.35),0_18px_60px_-16px_rgba(217,243,79,0.35)]" : "bg-transparent",
       )}
     >
       <div className={cx("transition-[padding] duration-300", active ? "px-4 pb-2 pt-4" : "px-2 pb-0 pt-1")}>
@@ -97,7 +97,7 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
               <Link href={`/c/${creator.username}`} className="flex items-center gap-1 text-[14px] font-semibold leading-tight tracking-[-0.01em]">
                 <span className="truncate">{creator.name}</span>
                 {creator.verified && <Verified className="shrink-0 text-ink" size={13} />}
-                {playing && <span className="ml-1 shrink-0 rounded-full bg-pop px-2 py-0.5 text-[10px] font-bold text-ink">now playing</span>}
+                {playing && <span className="ml-1 shrink-0 rounded-full bg-pop px-2 py-0.5 text-[10px] font-bold text-black">now playing</span>}
               </Link>
               <p className="truncate text-[12px] text-stone">
                 {creator.role} · {ago(note.publishedAt, now)}
@@ -122,7 +122,7 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
             aria-label={locked ? "Unlock with VoysNote+" : playing ? "Pause" : "Play"}
             className={cx(
               "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-transform duration-200 active:scale-90",
-              locked ? "bg-mist text-ink-2" : playing ? "bg-pop text-ink" : "bg-ink text-cream",
+              locked ? "bg-mist text-ink-2" : playing ? "bg-pop text-black" : "bg-ink text-cream",
             )}
           >
             {locked ? <IconLock size={17} /> : playing ? <IconPause size={16} /> : <IconPlay size={16} className="translate-x-[1px]" />}

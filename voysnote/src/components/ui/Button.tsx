@@ -4,7 +4,7 @@ import { cx } from "@/lib/utils";
 type Variant = "primary" | "ink" | "ghost" | "outline" | "cream" | "soft";
 
 const styles: Record<Variant, string> = {
-  primary: "bg-accent text-cream hover:bg-accent-2",
+  primary: "bg-accent text-black hover:bg-accent-2",
   ink: "bg-ink text-cream hover:bg-ink-2",
   soft: "bg-accent-soft text-accent hover:brightness-[0.97]",
   outline: "border border-ink/15 text-ink hover:border-ink/35 bg-paper",

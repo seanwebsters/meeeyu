@@ -5,9 +5,9 @@ import { makeWaveform } from "@/lib/utils";
 // Stories); format=og → 1200×630 (link previews). It's a tease: name, hook
 // and duration only, never the audio or what was said.
 
-const CREAM = "#f4f0e8";
-const INK = "#1d1c19";
-const MOSS = "#121211";
+const CREAM = "#0c0c0b";
+const INK = "#f5f3ee";
+const MOSS = "#d9f34f";
 const STONE = "#8a8378";
 
 async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | null> {
@@ -142,7 +142,7 @@ export async function GET(req: Request) {
           </svg>
           <div style={{ display: "flex", alignItems: "center", gap: 6 * s, flex: 1, height: 60 * s }}>
             {bars.map((v, i) => (
-              <div key={i} style={{ flex: 1, height: `${Math.max(18, v * 100)}%`, background: "rgba(243,238,229,0.75)", borderRadius: 99 }} />
+              <div key={i} style={{ flex: 1, height: `${Math.max(18, v * 100)}%`, background: "rgba(12,12,11,0.7)", borderRadius: 99 }} />
             ))}
           </div>
           <span style={{ fontSize: 40 * s, fontWeight: 700 }}>{mm}</span>

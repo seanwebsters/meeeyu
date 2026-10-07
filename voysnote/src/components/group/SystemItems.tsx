@@ -41,7 +41,7 @@ export function JoinedMoment({ creator, at }: { creator: Creator; at: string }) 
       <Link href={`/c/${creator.username}`} className="relative">
         {fresh && <span className="pulse-ring absolute inset-0 rounded-[28%] bg-pop" />}
         <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={fresh ? 88 : 68} square sticker tilt={tiltFor(creator.id) || 3} />
-        {fresh && <span className="absolute -right-3 -top-1 rotate-12 rounded-full bg-pop px-2 py-0.5 text-[11px] font-bold text-ink shadow-sm">new</span>}
+        {fresh && <span className="absolute -right-3 -top-1 rotate-12 rounded-full bg-pop px-2 py-0.5 text-[11px] font-bold text-black shadow-sm">new</span>}
       </Link>
       <Link href={`/c/${creator.username}`} className="display mt-3.5 text-[24px] lowercase">
         {firstName(creator.name)} joined the group
@@ -68,7 +68,7 @@ export function JoinedMoment({ creator, at }: { creator: Creator; at: string }) 
 export function YouJoined() {
   return (
     <p className="text-center text-[13px] text-stone">
-      <span className="rounded-full bg-pop px-2.5 py-1 font-semibold text-ink">you&apos;re in 🫶</span>
+      <span className="rounded-full bg-pop px-2.5 py-1 font-semibold text-black">you&apos;re in 🫶</span>
     </p>
   );
 }
@@ -172,7 +172,7 @@ export function PendingIndicator({ pending }: { pending: Pending }) {
         }}
         className={cx(
           "relative mt-4 flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors",
-          notify ? "bg-pop text-ink" : "bg-ink text-cream",
+          notify ? "bg-pop text-black" : "bg-ink text-cream",
         )}
       >
         <IconBell size={16} /> {notify ? "we'll ping you" : "ping me"}

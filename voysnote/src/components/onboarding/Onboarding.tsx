@@ -133,13 +133,13 @@ function Intro({ onNext }: { onNext: () => void }) {
 
   return (
     <motion.div {...screen} className="relative flex min-h-dvh flex-col overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#e9e3d6] via-[#cdbfa8] to-[#8e7f69]">
+      <div className="absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_62%,rgba(217,243,79,0.28),transparent_60%),linear-gradient(180deg,#1b1b18,#0c0c0b)]">
         {heroOk && (
           // eslint-disable-next-line @next/next/no-img-element -- full-bleed editorial photo
           <img src={HERO} alt="" onError={() => setHeroOk(false)} className="h-full w-full object-cover object-[50%_30%]" />
         )}
         <div className="absolute inset-x-0 top-0 h-[45%] bg-gradient-to-b from-cream/85 via-cream/40 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-ink/55 via-ink/15 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       </div>
 
       <div className="relative px-8 pt-[max(56px,calc(env(safe-area-inset-top)+40px))] text-center">
@@ -181,7 +181,7 @@ function Intro({ onNext }: { onNext: () => void }) {
         <Button size="lg" className="w-full" onClick={onNext}>
           Join the group <IconArrowRight size={18} />
         </Button>
-        <p className="mt-3 text-center text-[12px] text-cream/90">A more human internet. One voice at a time.</p>
+        <p className="mt-3 text-center text-[12px] text-white/80">A more human internet. One voice at a time.</p>
       </div>
     </motion.div>
   );
@@ -303,7 +303,7 @@ function Interests({ initial, onBack, onDone }: { initial: Category[]; onBack: (
               aria-pressed={on}
               className={cx(
                 "flex h-12 items-center gap-2 rounded-full px-5 text-[16px] font-medium tracking-[-0.01em] transition-colors",
-                on ? "bg-pop text-ink" : "bg-mist text-ink hover:bg-line",
+                on ? "bg-pop text-black" : "bg-mist text-ink hover:bg-line",
               )}
             >
               <Icon size={18} />
@@ -393,7 +393,7 @@ function Joining() {
           );
         })}
         <motion.div
-          className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-accent text-cream"
+          className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-accent text-black"
           animate={added ? { scale: [1, 1.12, 1] } : {}}
           transition={{ duration: 0.6 }}
         >
