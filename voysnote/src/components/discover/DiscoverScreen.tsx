@@ -11,6 +11,7 @@ import { noteToPlayable } from "@/lib/audio/playable";
 import { useApp, useCatalog, useEntitlements } from "@/lib/store/app";
 import { useNow } from "@/lib/store/clock";
 import { firstName, TIME } from "@/lib/utils";
+import { categoryColor } from "@/lib/palette";
 import { Avatar, Portrait } from "../ui/Avatar";
 import { CreatorRow } from "../creator/CreatorRow";
 import { tiltFor } from "../group/SystemItems";
@@ -192,13 +193,14 @@ export function DiscoverScreen() {
 
           <Section title="Categories" className="px-5 pt-8">
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => {
+              {CATEGORIES.map((c, i) => {
                 const Icon = CATEGORY_ICONS[c];
                 return (
                   <button
                     key={c}
                     onClick={() => setCat(c)}
-                    className="flex h-10 items-center gap-2 rounded-full bg-mist px-4 text-[14px] font-medium lowercase text-ink transition-colors hover:bg-line"
+                    style={{ background: categoryColor(i) }}
+                    className="flex h-10 items-center gap-2 rounded-full px-4 text-[14px] font-semibold lowercase text-black transition-transform active:scale-95"
                   >
                     <Icon size={16} />
                     {c}

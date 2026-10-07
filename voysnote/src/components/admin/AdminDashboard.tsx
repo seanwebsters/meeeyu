@@ -13,6 +13,7 @@ import { player } from "@/lib/audio/engine";
 import { noteToPlayable } from "@/lib/audio/playable";
 import { clockTime, cx, formatDuration, formatPrice, makeWaveform, relativeFuture, relativeShort, uid } from "@/lib/utils";
 import { Avatar } from "../ui/Avatar";
+import { pairFor } from "@/lib/palette";
 import { Button } from "../ui/Button";
 import { Waveform } from "../ui/Waveform";
 import { IconBack, IconPlay, VMark } from "../icons";
@@ -247,7 +248,7 @@ function CreatorForm() {
       foundingVoice: f.founding,
       followers: 0,
       joinedAt,
-      tone: "#b8a48e",
+      tone: pairFor(f.username || f.name).bg,
       voice: { pitch: 1 },
     };
     setBusy(true);

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { cx, initials } from "@/lib/utils";
+import { partnerOf } from "@/lib/palette";
+import { Asterisk } from "../icons";
 
 interface Props {
   src?: string | null;
@@ -56,7 +58,7 @@ export function Avatar({ src, name, size = 40, tone = "#b8a48e", className, puls
             className="h-full w-full object-cover grayscale-[12%] contrast-[1.02]"
           />
         ) : (
-          <span className="display text-white/95 select-none" style={{ fontSize: size * 0.44 }}>
+          <span className="display select-none" style={{ fontSize: size * 0.44, color: partnerOf(tone) ?? "rgba(255,255,255,0.95)" }}>
             {initials(name)}
           </span>
         )}
@@ -74,8 +76,11 @@ export function Portrait({ src, name, tone = "#b8a48e", className }: { src?: str
         // eslint-disable-next-line @next/next/no-img-element -- remote editorial portraits
         <img src={src} alt={name} onError={() => setFailed(true)} className="h-full w-full object-cover grayscale-[15%]" />
       ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <span className="display text-[120px] text-white/90">{initials(name)}</span>
+        <div className="relative flex h-full w-full items-center justify-center">
+          {partnerOf(tone) && <Asterisk size={260} className="spin-slow absolute -right-16 -top-16 opacity-90" style={{ color: partnerOf(tone) }} />}
+          <span className="display relative text-[120px]" style={{ color: partnerOf(tone) ? "#0c0c0b" : "rgba(255,255,255,0.9)" }}>
+            {initials(name)}
+          </span>
         </div>
       )}
     </div>

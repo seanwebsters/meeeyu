@@ -11,7 +11,8 @@ import { useNow } from "@/lib/store/clock";
 import { cx } from "@/lib/utils";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
-import { CATEGORY_ICONS, IconArrowRight, IconBack, VMark } from "../icons";
+import { Asterisk, CATEGORY_ICONS, IconArrowRight, IconBack, VMark } from "../icons";
+import { categoryColor, PALETTE } from "@/lib/palette";
 import { toast } from "../ui/Toast";
 
 type Step = "intro" | "auth" | "interests" | "name" | "joining";
@@ -23,9 +24,6 @@ const screen = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
   exit: { opacity: 0, y: -12, transition: { duration: 0.25, ease } },
 };
-
-// Editorial hero. Falls back to a warm gradient if the photo can't load.
-const HERO = "https://images.unsplash.com/photo-1484755560615-a4c64e778a6c?w=900&h=1500&fit=crop&crop=faces&auto=format&q=75";
 
 export function Onboarding() {
   const params = useSearchParams();
@@ -124,30 +122,31 @@ function TopBar({ step, onBack, onSkip }: { step: Step; onBack?: () => void; onS
 function Intro({ onNext }: { onNext: () => void }) {
   const { idx } = useCatalog();
   const maya = idx.creators.get("c_maya")!;
-  const [heroOk, setHeroOk] = useState(true);
   const [chip, setChip] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setChip(true), 1400);
     return () => clearTimeout(t);
   }, []);
 
+  // Colour-blocked: red field, green type, a giant green asterisk.
   return (
-    <motion.div {...screen} className="relative flex min-h-dvh flex-col overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_62%,rgba(217,243,79,0.28),transparent_60%),linear-gradient(180deg,#1b1b18,#0c0c0b)]">
-        {heroOk && (
-          // eslint-disable-next-line @next/next/no-img-element -- full-bleed editorial photo
-          <img src={HERO} alt="" onError={() => setHeroOk(false)} className="h-full w-full object-cover object-[50%_30%]" />
-        )}
-        <div className="absolute inset-x-0 top-0 h-[45%] bg-gradient-to-b from-cream/85 via-cream/40 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-      </div>
+    <motion.div {...screen} className="relative flex min-h-dvh flex-col overflow-hidden" style={{ background: PALETTE.red }}>
+      <motion.div
+        initial={{ scale: 0.4, rotate: -40, opacity: 0 }}
+        animate={{ scale: 1, rotate: 0, opacity: 1 }}
+        transition={{ type: "spring", damping: 14, stiffness: 90, delay: 0.15 }}
+        className="pointer-events-none absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2"
+      >
+        <Asterisk size={340} className="spin-slow" style={{ color: PALETTE.green }} />
+      </motion.div>
 
-      <div className="relative px-8 pt-[max(56px,calc(env(safe-area-inset-top)+40px))] text-center">
+      <div className="relative px-7 pt-[max(56px,calc(env(safe-area-inset-top)+40px))]">
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6, ease }}
-          className="wordmark text-[44px] text-ink"
+          className="wordmark text-[56px] leading-none"
+          style={{ color: PALETTE.green }}
         >
           VoysNote
         </motion.h1>
@@ -155,7 +154,7 @@ function Intro({ onNext }: { onNext: () => void }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.6, ease }}
-          className="mx-auto mt-2 max-w-[280px] text-[20px] leading-[1.3] text-ink-2"
+          className="display mt-3 max-w-[300px] text-[30px] text-black"
         >
           30 seconds a day from the world&apos;s most interesting people.
         </motion.p>
@@ -165,23 +164,23 @@ function Intro({ onNext }: { onNext: () => void }) {
         <AnimatePresence>
           {chip && (
             <motion.div
-              initial={{ opacity: 0, y: 12, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ type: "spring", damping: 20 }}
-              className="mx-auto mb-4 flex w-fit items-center gap-2 rounded-full bg-paper/90 py-1.5 pl-1.5 pr-3.5 text-[13px] shadow-lg backdrop-blur"
+              initial={{ opacity: 0, y: 12, scale: 0.9, rotate: -4 }}
+              animate={{ opacity: 1, y: 0, scale: 1, rotate: -3 }}
+              transition={{ type: "spring", damping: 16 }}
+              className="mx-auto mb-5 flex w-fit items-center gap-2 rounded-full bg-black py-1.5 pl-1.5 pr-3.5 text-[13px] text-white shadow-lg"
             >
               <Avatar src={maya.avatar} name={maya.name} tone={maya.tone} size={26} />
               <span>
                 <b className="font-semibold">Maya</b> joined the group
               </span>
-              <span className="live-dot h-1.5 w-1.5 rounded-full bg-live" />
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-green" />
             </motion.div>
           )}
         </AnimatePresence>
-        <Button size="lg" className="w-full" onClick={onNext}>
+        <Button size="lg" variant="ink" className="w-full !bg-black !text-white" onClick={onNext}>
           Join the group <IconArrowRight size={18} />
         </Button>
-        <p className="mt-3 text-center text-[12px] text-white/80">A more human internet. One voice at a time.</p>
+        <p className="mt-3 text-center text-[12px] font-medium text-black/70">A more human internet. One voice at a time.</p>
       </div>
     </motion.div>
   );
@@ -303,8 +302,9 @@ function Interests({ initial, onBack, onDone }: { initial: Category[]; onBack: (
               aria-pressed={on}
               className={cx(
                 "flex h-12 items-center gap-2 rounded-full px-5 text-[16px] font-medium tracking-[-0.01em] transition-colors",
-                on ? "bg-pop text-black" : "bg-mist text-ink hover:bg-line",
+                on ? "text-black" : "bg-mist text-ink hover:bg-line",
               )}
+              style={on ? { background: categoryColor(i) } : undefined}
             >
               <Icon size={18} />
               {c.toLowerCase()}

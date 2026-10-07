@@ -11,14 +11,14 @@ import { actions, useApp } from "@/lib/store/app";
 import { useNow } from "@/lib/store/clock";
 import { ago, cx, firstName, initials, relativeFuture } from "@/lib/utils";
 import { Avatar } from "../ui/Avatar";
-import { IconBell, IconLock } from "../icons";
+import { Asterisk, IconBell, IconLock } from "../icons";
+import { pairFor, PALETTE } from "@/lib/palette";
 import { toast } from "../ui/Toast";
 
 export function DayDivider({ label }: { label: string }) {
   return <p className="pt-2 text-center text-[12px] font-medium lowercase text-stone-2">{label}</p>;
 }
 
-/** The magic moment: someone interesting just joined. A quiet line, not a card. */
 /** Stable playful tilt per person, -4..4 degrees. */
 export function tiltFor(id: string) {
   let h = 0;
@@ -26,41 +26,47 @@ export function tiltFor(id: string) {
   return (Math.abs(h) % 9) - 4;
 }
 
-/** The magic moment: someone interesting just joined. Big, a little loud. */
+/** The magic moment: someone interesting just joined. A full colour block in their pair. */
 export function JoinedMoment({ creator, at }: { creator: Creator; at: string }) {
   const following = useApp((s) => s.follows.includes(creator.id));
   const now = useNow();
   const [fresh] = useState(() => Date.now() - new Date(at).getTime() < 10_000);
+  const pair = pairFor(creator.id);
   return (
     <motion.div
-      initial={fresh ? { opacity: 0, scale: 0.6, rotate: -8 } : false}
+      initial={fresh ? { opacity: 0, scale: 0.7, rotate: -6 } : false}
       animate={{ opacity: 1, scale: 1, rotate: 0 }}
-      transition={{ type: "spring", damping: 12, stiffness: 180 }}
-      className="flex flex-col items-center py-2 text-center"
+      transition={{ type: "spring", damping: 13, stiffness: 180 }}
+      className="relative overflow-hidden rounded-[30px] px-5 pb-5 pt-6"
+      style={{ background: pair.bg }}
     >
-      <Link href={`/c/${creator.username}`} className="relative">
-        {fresh && <span className="pulse-ring absolute inset-0 rounded-[28%] bg-pop" />}
-        <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={fresh ? 88 : 68} square sticker tilt={tiltFor(creator.id) || 3} />
-        {fresh && <span className="absolute -right-3 -top-1 rotate-12 rounded-full bg-pop px-2 py-0.5 text-[11px] font-bold text-black shadow-sm">new</span>}
+      <Asterisk size={150} className="spin-slow absolute -right-10 -top-10" style={{ color: pair.fg }} />
+      <Link href={`/c/${creator.username}`} className="relative inline-block">
+        <Avatar src={creator.avatar} name={creator.name} tone={creator.tone} size={fresh ? 80 : 68} square sticker tilt={tiltFor(creator.id) || 3} />
+        {fresh && <span className="absolute -right-4 -top-2 rotate-12 rounded-full bg-black px-2 py-0.5 text-[11px] font-bold text-white">new</span>}
       </Link>
-      <Link href={`/c/${creator.username}`} className="display mt-3.5 text-[24px] lowercase">
-        {firstName(creator.name)} joined the group
+      <Link href={`/c/${creator.username}`} className="display relative mt-4 block text-[34px] lowercase leading-[0.92]" style={{ color: pair.fg }}>
+        {firstName(creator.name)} joined
+        <br />
+        the group
       </Link>
-      <p className="mt-1 text-[13px] text-stone">
-        {creator.role.toLowerCase()} · {ago(at, now)}
-        {creator.foundingVoice && " · founding voice ⭐"}
-      </p>
-      {!following && (
-        <button
-          onClick={() => {
-            actions.toggleFollow(creator.id);
-            toast(`following ${firstName(creator.name).toLowerCase()} 🫶`);
-          }}
-          className="mt-3 rounded-full bg-ink px-4 py-2 text-[13px] font-semibold text-cream active:scale-95"
-        >
-          follow
-        </button>
-      )}
+      <div className="relative mt-3 flex items-center justify-between gap-3">
+        <p className="text-[13px] font-medium text-black/70">
+          {creator.role.toLowerCase()} · {ago(at, now)}
+          {creator.foundingVoice && " · founding voice"}
+        </p>
+        {!following && (
+          <button
+            onClick={() => {
+              actions.toggleFollow(creator.id);
+              toast(`following ${firstName(creator.name).toLowerCase()} 🫶`);
+            }}
+            className="shrink-0 rounded-full bg-black px-4 py-2 text-[13px] font-semibold text-white active:scale-95"
+          >
+            follow
+          </button>
+        )}
+      </div>
     </motion.div>
   );
 }
@@ -68,7 +74,7 @@ export function JoinedMoment({ creator, at }: { creator: Creator; at: string }) 
 export function YouJoined() {
   return (
     <p className="text-center text-[13px] text-stone">
-      <span className="rounded-full bg-pop px-2.5 py-1 font-semibold text-black">you&apos;re in 🫶</span>
+      <span className="rounded-full bg-pink px-2.5 py-1 font-semibold text-black">you&apos;re in 🫶</span>
     </p>
   );
 }
@@ -157,14 +163,17 @@ export function PendingIndicator({ pending }: { pending: Pending }) {
   }
 
   return (
-    <div className="card relative flex flex-col items-center overflow-hidden px-5 py-6 text-center">
+    <div className="relative flex flex-col items-center overflow-hidden rounded-[30px] px-5 py-7 text-center" style={{ background: PALETTE.purple }}>
+      <Asterisk size={120} className="spin-slow absolute -bottom-12 -left-10" style={{ color: PALETTE.pink }} />
       <div className="relative flex -space-x-2.5">
         {[0, 1, 2].map((i) => (
-          <span key={i} className="sticker h-10 w-10 rounded-full bg-gradient-to-br from-stone-2 to-mist" style={{ transform: `rotate(${(i - 1) * 8}deg)` }} />
+          <span key={i} className="sticker h-10 w-10 rounded-full bg-black/25" style={{ transform: `rotate(${(i - 1) * 8}deg)` }} />
         ))}
       </div>
-      <p className="relative mt-3 text-[13px] font-semibold text-stone">who&apos;s next? 👀</p>
-      <p className="display relative mt-1.5 text-[24px]">someone new joins {relativeFuture(pending.at, now)}</p>
+      <p className="relative mt-3 text-[13px] font-semibold text-black/70">who&apos;s next? 👀</p>
+      <p className="display relative mt-1.5 text-[30px] leading-[0.95]" style={{ color: PALETTE.pink }}>
+        someone new joins {relativeFuture(pending.at, now)}
+      </p>
       <button
         onClick={() => {
           setNotify(true);
@@ -172,7 +181,7 @@ export function PendingIndicator({ pending }: { pending: Pending }) {
         }}
         className={cx(
           "relative mt-4 flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors",
-          notify ? "bg-pop text-black" : "bg-ink text-cream",
+          notify ? "bg-pink text-black" : "bg-black text-white",
         )}
       >
         <IconBell size={16} /> {notify ? "we'll ping you" : "ping me"}

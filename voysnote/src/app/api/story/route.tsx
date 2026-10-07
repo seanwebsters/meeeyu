@@ -5,10 +5,11 @@ import { makeWaveform } from "@/lib/utils";
 // Stories); format=og → 1200×630 (link previews). It's a tease: name, hook
 // and duration only, never the audio or what was said.
 
-const CREAM = "#0c0c0b";
-const INK = "#f5f3ee";
-const MOSS = "#d9f34f";
-const STONE = "#8a8378";
+// Brand palette: red block, light-green display type, black for small text.
+const RED = "#EB4213";
+const GREEN = "#D8F382";
+const PINK = "#FF99DC";
+const BLACK = "#0c0c0b";
 
 async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | null> {
   return Promise.race([p, new Promise<null>((r) => setTimeout(() => r(null), ms))]).catch(() => null);
@@ -73,32 +74,50 @@ export async function GET(req: Request) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
-        background: CREAM,
-        color: INK,
+        background: RED,
+        color: BLACK,
+        position: "relative",
+        overflow: "hidden",
         padding: `${140 * s}px ${90 * s}px ${120 * s}px`,
         fontFamily: "Inter",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 14 * s }}>
+      <div style={{ position: "absolute", right: -110 * s, top: -90 * s, width: 460 * s, height: 460 * s, display: "flex" }}>
+        {[0, 45, 90, 135].map((r) => (
+          <div
+            key={r}
+            style={{ position: "absolute", left: 189 * s, top: 0, width: 82 * s, height: 460 * s, background: GREEN, transform: `rotate(${r}deg)` }}
+          />
+        ))}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 14 * s, alignSelf: "flex-start" }}>
         <svg width={56 * s} height={56 * s} viewBox="0 0 32 32">
-          <path d="M6 9.5 16 24 26 9.5" fill="none" stroke={MOSS} strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M12.2 9.5v4.2M16 7v6.5M19.8 9.5v4.2" fill="none" stroke={MOSS} strokeWidth={2.2} strokeLinecap="round" />
+          <path d="M6 9.5 16 24 26 9.5" fill="none" stroke={BLACK} strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12.2 9.5v4.2M16 7v6.5M19.8 9.5v4.2" fill="none" stroke={BLACK} strokeWidth={2.2} strokeLinecap="round" />
         </svg>
-        <span style={{ fontSize: 56 * s, fontWeight: 700, letterSpacing: -3 * s }}>VoysNote</span>
+        <span style={{ fontSize: 56 * s, fontWeight: 700, letterSpacing: -3 * s }}>voysnote</span>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
         {avatar ? (
           // eslint-disable-next-line @next/next/no-img-element -- rendered by satori, not the browser
-          <img src={avatar} width={avatarSize} height={avatarSize} style={{ borderRadius: 9999, objectFit: "cover" }} alt="" />
+          <img
+            src={avatar}
+            width={avatarSize}
+            height={avatarSize}
+            style={{ borderRadius: avatarSize * 0.28, objectFit: "cover", border: `${12 * s}px solid white`, transform: "rotate(-4deg)" }}
+            alt=""
+          />
         ) : (
           <div
             style={{
               width: avatarSize,
               height: avatarSize,
-              borderRadius: 9999,
-              background: MOSS,
-              color: CREAM,
+              borderRadius: avatarSize * 0.28,
+              background: PINK,
+              color: RED,
+              border: `${12 * s}px solid white`,
+              transform: "rotate(-4deg)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -109,7 +128,7 @@ export async function GET(req: Request) {
             {initials}
           </div>
         )}
-        <span style={{ marginTop: 70 * s, fontSize: 28 * s, letterSpacing: 8 * s, color: STONE, fontWeight: 700 }}>THE GROUP</span>
+        <span style={{ marginTop: 70 * s, fontSize: 28 * s, letterSpacing: 8 * s, color: BLACK, fontWeight: 700 }}>THE GROUP</span>
         <span
           style={{
             marginTop: 22 * s,
@@ -117,6 +136,7 @@ export async function GET(req: Request) {
             lineHeight: 1,
             letterSpacing: -3 * s,
             fontWeight: 700,
+            color: GREEN,
             maxWidth: og ? 1100 : 900,
             textAlign: "center",
           }}
@@ -129,20 +149,20 @@ export async function GET(req: Request) {
             display: "flex",
             alignItems: "center",
             gap: 26 * s,
-            background: MOSS,
-            color: CREAM,
+            background: BLACK,
+            color: GREEN,
             borderRadius: 9999,
             padding: `${30 * s}px ${44 * s}px`,
             width: 780 * s,
           }}
         >
           <svg width={46 * s} height={46 * s} viewBox="0 0 24 24">
-            <rect x="9" y="3.5" width="6" height="11" rx="3" fill={CREAM} />
-            <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5" fill="none" stroke={CREAM} strokeWidth={1.8} strokeLinecap="round" />
+            <rect x="9" y="3.5" width="6" height="11" rx="3" fill={GREEN} />
+            <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5" fill="none" stroke={GREEN} strokeWidth={1.8} strokeLinecap="round" />
           </svg>
           <div style={{ display: "flex", alignItems: "center", gap: 6 * s, flex: 1, height: 60 * s }}>
             {bars.map((v, i) => (
-              <div key={i} style={{ flex: 1, height: `${Math.max(18, v * 100)}%`, background: "rgba(12,12,11,0.7)", borderRadius: 99 }} />
+              <div key={i} style={{ flex: 1, height: `${Math.max(18, v * 100)}%`, background: GREEN, borderRadius: 99 }} />
             ))}
           </div>
           <span style={{ fontSize: 40 * s, fontWeight: 700 }}>{mm}</span>
@@ -150,8 +170,10 @@ export async function GET(req: Request) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <span style={{ fontSize: 46 * s, fontWeight: 700, color: MOSS }}>Listen on VoysNote</span>
-        {!og && <span style={{ marginTop: 14, fontSize: 28, color: STONE }}>30 seconds a day from the world&apos;s most interesting people</span>}
+        <span style={{ fontSize: 46 * s, fontWeight: 700, color: BLACK }}>Listen on VoysNote</span>
+        {!og && (
+          <span style={{ marginTop: 14, fontSize: 28, color: "rgba(12,12,11,0.7)" }}>30 seconds a day from the world&apos;s most interesting people</span>
+        )}
       </div>
     </div>,
     {

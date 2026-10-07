@@ -40,7 +40,7 @@ takes its place.
 
 | Screen | Route | Notes |
 | --- | --- | --- |
-| Onboarding | `/welcome` | Photo-led welcome, Apple / Google / email, interest tiles, name, "You joined the group." |
+| Onboarding | `/welcome` | Red colour-block welcome, Apple / Google / email, interest tiles, name, "You joined the group." |
 | The Group | `/` | The home screen. Group / Following / For You tabs over one chronological conversation: join cards, note cards (heart, replies, save, share), "people listening" lines, "Someone new is joining…" with live listener presence, "is recording…", and a "Who's next?" teaser. Opens at the latest message. |
 | Discover | `/discover` | Search, categories, recently joined, trending voices, featured series, recommended for you |
 | Creator profile | `/c/[username]` | Editorial portrait, Founding Voice, follow, series, all their notes |
@@ -80,20 +80,38 @@ mirrors the same rules on the server.
 
 ### Design
 
-Gen Z, dark by default. Off-black backgrounds, off-white type, flat
-surfaces, and notes that read as a thread. Personality comes from:
+Gen Z, dark by default, with four flat colours. Off-black backgrounds,
+off-white type and flat surfaces carry the thread, and the palette makes
+the big moments loud.
 
+| Colour | Hex | Partner (big type and asterisks on it) |
+| --- | --- | --- |
+| Red | `#EB4213` | light green |
+| Pink | `#FF99DC` | red |
+| Purple | `#826DEE` | pink |
+| Light green | `#D8F382` | purple |
+
+`src/lib/palette.ts` holds the palette, the pairs and `pairFor(id)`, which
+gives every creator a stable colour pair. Partners only ever carry big
+display type and graphics; small text on a colour block is black, for
+contrast.
+
+- **Colour blocks:** the welcome screen is red with a giant spinning green
+  asterisk. Every "joined the group" moment is a full block in that
+  creator's pair. "Who's next?" is purple and pink, and VoysNote+ is a
+  purple block.
+- **Light green** (`--accent`) is the action colour: primary buttons, the
+  "+" button, the played part of the waveform and "now playing".
+- **Categories and interests** cycle red, pink, purple, green.
 - **Bricolage Grotesque** for the wordmark and headings; Inter for
   everything else.
-- **Acid lime** (`--accent` / `--pop`) as the hero colour, always with
-  black type. It covers primary buttons, the "+" button, the played part of
-  the waveform, the playing note's glow and "now playing" tag, selected
-  interests, and "new" / "you're in 🫶" tags.
-- **Stickers:** portraits get a bright white die-cut border and a slight
-  tilt. Joins are the hero moment: a tilted sticker, big type and a "new"
-  tag.
-- **A floating glass dock** for navigation, and pill tabs.
-- **Emoji bursts** when you react.
+- **Stickers:** portraits are rounded squares with a white die-cut border
+  and a slight tilt. Without a photo they become a colour block with a
+  monogram.
+- **Story cards** are red, with a green headline and an asterisk. The app
+  icon is a green V on red.
+- **A floating glass dock** for navigation, pill tabs, and **emoji bursts**
+  when you react.
 - **Casual microcopy:** "12K in the chat · 4,281 tuned in", "someone's
   about to join 👀", "who's next? 👀" and "ping me".
 

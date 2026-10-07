@@ -10,9 +10,10 @@ import { useNow } from "@/lib/store/clock";
 import { PLUS_PRICE_PENCE } from "@/lib/pricing";
 import { supabaseConfigured } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
+import { PALETTE } from "@/lib/palette";
 import { Avatar, Portrait } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import { IconArrowRight, IconBack, IconCheck, IconClock, IconGrid } from "@/components/icons";
+import { Asterisk, IconArrowRight, IconBack, IconCheck, IconClock, IconGrid } from "@/components/icons";
 import { toast } from "@/components/ui/Toast";
 
 const FEATURES = [
@@ -66,17 +67,20 @@ export default function PlusPage() {
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="relative px-6 pt-4"
       >
-        <h1 className="wordmark text-[48px] leading-none">voysnote+</h1>
-        <p className="mt-4 max-w-[300px] text-[20px] leading-snug tracking-[-0.01em] text-stone">
-          go deeper. exclusive voices. original series. a closer group.
-        </p>
-        <div className="mt-5 flex items-center gap-2">
-          <div className="flex -space-x-2">
-            {faces.map((c) => (
-              <Avatar key={c.id} src={c.avatar} name={c.name} tone={c.tone} size={30} className="rounded-full ring-2 ring-cream" />
-            ))}
+        <div className="relative overflow-hidden rounded-[30px] p-6" style={{ background: PALETTE.purple }}>
+          <Asterisk size={150} className="spin-slow pointer-events-none absolute -bottom-14 -right-12" style={{ color: PALETTE.pink }} />
+          <h1 className="wordmark relative text-[52px] leading-none" style={{ color: PALETTE.pink }}>
+            voysnote+
+          </h1>
+          <p className="display relative mt-4 max-w-[270px] text-[24px] leading-[1.1] text-black">go deeper. exclusive voices. a closer group.</p>
+          <div className="relative mt-5 flex items-center gap-2">
+            <div className="flex -space-x-2">
+              {faces.map((c) => (
+                <Avatar key={c.id} src={c.avatar} name={c.name} tone={c.tone} size={30} className="rounded-full ring-2 ring-black" />
+              ))}
+            </div>
+            <span className="text-[12px] font-medium text-black/70">members hear them first</span>
           </div>
-          <span className="text-[12px] text-stone">members hear them first</span>
         </div>
 
         <ul className="mt-6 space-y-3">

@@ -309,3 +309,16 @@ export const CATEGORY_ICONS: Record<string, (p: P) => React.ReactElement> = {
     </Svg>
   ),
 };
+
+/** The brand asterisk: eight chunky arms. Colour it with currentColor. */
+export function Asterisk({ size = 48, className = "", style }: { size?: number; className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} style={style} aria-hidden>
+      <g fill="currentColor">
+        {[0, 45, 90, 135].map((r) => (
+          <rect key={r} x="41" y="0" width="18" height="100" transform={`rotate(${r} 50 50)`} />
+        ))}
+      </g>
+    </svg>
+  );
+}

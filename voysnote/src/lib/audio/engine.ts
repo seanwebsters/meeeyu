@@ -16,6 +16,7 @@ export interface Playable {
   title: string;
   creatorName: string;
   avatar?: string;
+  tone?: string;
   duration: number;
   audioUrl: string | null;
   transcript: string;

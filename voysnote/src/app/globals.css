@@ -11,16 +11,20 @@
   --stone-2: #5e5b55;
   --ink-2: #cdc9c0;
   --ink: #f5f3ee;
-  /* Primary actions are lime with black type. */
-  --accent: #d9f34f;
-  --accent-2: #e6f87e;
+  /* Brand palette: red, pink, purple, light green. Each has a partner colour. */
+  --red: #eb4213;
+  --pink: #ff99dc;
+  --purple: #826dee;
+  --green: #d8f382;
+  /* Primary actions are light green with black type. */
+  --accent: #d8f382;
+  --accent-2: #e4f8a4;
   --accent-soft: #232320;
   --gold: #cdc9c0;
   --gold-soft: #232320;
-  --heart: #ff4d5e;
-  /* The one pop colour: acid lime. Fills only, always with black on top. */
-  --pop: #d9f34f;
-  --live: #d9f34f;
+  --heart: #eb4213;
+  --pop: #d8f382;
+  --live: #d8f382;
 }
 
 @theme inline {
@@ -40,6 +44,10 @@
   --color-heart: var(--heart);
   --color-live: var(--live);
   --color-pop: var(--pop);
+  --color-red: var(--red);
+  --color-pink: var(--pink);
+  --color-purple: var(--purple);
+  --color-green: var(--green);
   --font-display: var(--font-bricolage), var(--font-inter), sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -206,7 +214,19 @@ body::after {
   animation: shimmer 1.4s linear infinite;
 }
 
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 14s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .spin-slow {
+    animation: none;
+  }
   .wave-live,
   .pulse-ring,
   .typing-dot,

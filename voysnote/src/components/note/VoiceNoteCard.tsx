@@ -84,7 +84,7 @@ export function VoiceNoteCard({ note, creator, access = { state: "open" }, spons
       className={cx(
         // Flat: no card. The note only gets a surface while it plays.
         "relative -mx-2 overflow-hidden rounded-[22px] transition-colors duration-300",
-        active ? "bg-paper shadow-[0_0_0_1px_rgba(217,243,79,0.35),0_18px_60px_-16px_rgba(217,243,79,0.35)]" : "bg-transparent",
+        active ? "bg-paper shadow-[0_0_0_1px_rgba(216,243,130,0.4),0_18px_60px_-16px_rgba(130,109,238,0.55)]" : "bg-transparent",
       )}
     >
       <div className={cx("transition-[padding] duration-300", active ? "px-4 pb-2 pt-4" : "px-2 pb-0 pt-1")}>

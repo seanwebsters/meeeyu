@@ -2,6 +2,7 @@
 // resolved at session start by buildCatalog(), so the group always feels
 // alive. Everything here is fictional.
 
+import { pairFor } from "../palette";
 import type { Category, Creator, ReactionCounts, Series, SeriesEpisode, Sponsor } from "../types";
 
 const unsplash = (id: string, w: number, h: number) => `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&crop=faces&auto=format&q=72`;
@@ -278,6 +279,8 @@ export function creatorFromSeed(c: SeedCreator, joinedAt: string): Creator {
     avatar: unsplash(photo, 240, 240),
     portrait: unsplash(photo, 900, 1150),
     joinedAt,
+    // Every voice owns a colour pair from the brand palette.
+    tone: pairFor(rest.id).bg,
   };
 }
 
